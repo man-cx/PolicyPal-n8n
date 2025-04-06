@@ -2,9 +2,9 @@ import React from 'react';
 import { Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@contexts/ThemeContext';
+import { useTheme } from '../../src/contexts/ThemeContext';
 
-export default function ProfileLayout() {
+export default function SettingsLayout() {
   const { t } = useTranslation();
   const { theme, isDarkMode } = useTheme();
 
@@ -21,18 +21,6 @@ export default function ProfileLayout() {
     >
       <Stack.Screen
         name="index"
-        options={{
-          headerShown: false, // Hide header on tab screen as it's already shown in tab navigator
-        }}
-      />
-      <Stack.Screen
-        name="edit-profile"
-        options={{
-          title: t('edit_profile'),
-        }}
-      />
-      <Stack.Screen
-        name="settings"
         options={{
           title: t('settings'),
         }}
@@ -52,43 +40,25 @@ export default function ProfileLayout() {
       <Stack.Screen
         name="notifications"
         options={{
-          title: t('notification_settings'),
+          title: t('notification_preferences'),
+        }}
+      />
+      <Stack.Screen
+        name="account"
+        options={{
+          title: t('account_settings'),
+        }}
+      />
+      <Stack.Screen
+        name="security"
+        options={{
+          title: t('security'),
         }}
       />
       <Stack.Screen
         name="about"
         options={{
-          title: t('about_app'),
-        }}
-      />
-      <Stack.Screen
-        name="help-center"
-        options={{
-          title: t('help_support'),
-        }}
-      />
-      <Stack.Screen
-        name="faqs"
-        options={{
-          title: t('faqs'),
-        }}
-      />
-      <Stack.Screen
-        name="contact-support"
-        options={{
-          title: t('contact_support'),
-        }}
-      />
-      <Stack.Screen
-        name="user-guide"
-        options={{
-          title: t('user_guide'),
-        }}
-      />
-      <Stack.Screen
-        name="tutorials"
-        options={{
-          title: t('video_tutorials'),
+          title: t('about_policypal'),
         }}
       />
     </Stack>

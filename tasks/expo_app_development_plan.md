@@ -51,10 +51,10 @@
 - [x] Implement policy search functionality
 
 ## 8. AI Policy Advisor
-- [ ] Create AI chat interface
-- [ ] Implement query handling
-- [ ] Build response display
-- [ ] Create feedback/rating system
+- [x] Create AI chat interface
+- [x] Implement query handling
+- [x] Build response display
+- [x] Create feedback/rating system
 
 ## 9. Policy Sharing Features
 - [ ] Implement share policy screen
@@ -62,23 +62,23 @@
 - [ ] Build access log screen
 
 ## 10. Settings and Preferences
-- [ ] Create settings menu screen
+- [x] Create settings menu screen
 - [x] Implement language settings
 - [x] Build theme selection screen
-- [ ] Create notification preferences
-- [ ] Implement account settings
+- [x] Create notification preferences
+- [x] Implement account settings
 
 ## 11. Help and Support
-- [ ] Build help center screen
-- [ ] Create FAQs screen
-- [ ] Implement contact support screen
+- [x] Build help center screen
+- [x] Create FAQs screen
+- [x] Implement contact support screen
 
 ## 12. User Profile
-- [ ] Create user profile screen
-- [ ] Implement edit profile functionality
+- [x] Create user profile screen
+- [x] Implement edit profile functionality
 
 ## 13. Miscellaneous Screens
-- [ ] Build "About PolicyPal" screen
+- [x] Build "About PolicyPal" screen
 - [ ] Create app tour/walkthrough for new users
 
 ## 14. Testing
