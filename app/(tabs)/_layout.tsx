@@ -20,7 +20,7 @@ export default function TabLayout() {
         headerStyle: {
           backgroundColor: isDarkMode ? theme.colors.neutral[800] : theme.colors.neutral[50],
         },
-        headerTintColor: isDarkMode ? theme.colors.text.dark : theme.colors.text.dark,
+        headerTintColor: isDarkMode ? theme.colors.text.light : theme.colors.text.dark,
       }}
     >
       <Tabs.Screen

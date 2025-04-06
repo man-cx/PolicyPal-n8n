@@ -1,40 +1,48 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { combineReducers } from 'redux';
 
-// Import reducers here once created
-// import authReducer from './features/auth/authSlice';
-// import policiesReducer from './features/policies/policiesSlice';
+// Import slices here - for example:
+// import userReducer from './slices/userSlice';
+// import policyReducer from './slices/policySlice';
 
-// For now, create an empty reducer
-const emptyReducer = (state = {}, action) => state;
-
+// Combine all reducers
 const rootReducer = combineReducers({
-  // Add reducers here as they are created
-  // auth: authReducer,
-  // policies: policiesReducer,
-  app: emptyReducer,
+  // Add reducers here as they're created
+  // user: userReducer,
+  // policies: policyReducer,
 });
 
+// Configuration for redux-persist
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  // Whitelist the reducers you want to persist
-  whitelist: ['app'],
+  // Whitelist (save specific reducers)
+  whitelist: [
+    // 'user',
+    // 'policies',
+  ],
+  // Blacklist (don't save specific reducers)
+  blacklist: [],
 };
 
+// Create a persisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+// Create the store
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignore non-serializable values for these actions
+        // Ignore these action types
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
     }),
 });
 
-export const persistor = persistStore(store); 
+// Create persistor
+export const persistor = persistStore(store);
+
+export default { store, persistor }; 
