@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -8,17 +8,47 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@contexts/ThemeContext';
 import i18n from '@i18n/index';
 
-// Available languages
-const languages = [
-  { code: 'en', name: 'English', flag: require('@assets/flags/en.png') },
-  { code: 'zh-CN', name: '简体中文', flag: require('@assets/flags/zh-CN.png') },
-  { code: 'zh-TW', name: '繁體中文', flag: require('@assets/flags/zh-TW.png') },
+// Define language with specific icon type
+interface Language {
+  code: string;
+  name: string;
+  icon: 'language';
+}
+
+// Available languages with icon names instead of image files
+const languages: Language[] = [
+  { code: 'en', name: 'English', icon: 'language' },
+  { code: 'zh-CN', name: '简体中文', icon: 'language' },
+  { code: 'zh-TW', name: '繁體中文', icon: 'language' },
 ];
 
 export default function LanguageSelectionScreen() {
   const { t } = useTranslation();
   const { theme, isDarkMode, toggleTheme } = useTheme();
-  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('en'); // Default to English
+
+  // Load saved language or default to English on component mount
+  useEffect(() => {
+    const loadSavedLanguage = async () => {
+      try {
+        const savedLanguage = await AsyncStorage.getItem('USER_LANGUAGE');
+        if (savedLanguage) {
+          setSelectedLanguage(savedLanguage);
+        } else {
+          // Default to English
+          setSelectedLanguage('en');
+          await i18n.changeLanguage('en');
+        }
+      } catch (error) {
+        console.error('Failed to load saved language', error);
+        // Default to English on error
+        setSelectedLanguage('en');
+        await i18n.changeLanguage('en');
+      }
+    };
+
+    loadSavedLanguage();
+  }, []);
 
   const handleLanguageSelect = async (langCode: string) => {
     setSelectedLanguage(langCode);
@@ -56,10 +86,11 @@ export default function LanguageSelectionScreen() {
       
       {/* Header */}
       <View style={styles.headerContainer}>
-        <Image 
-          source={require('@assets/icon.png')} 
-          style={styles.logo} 
-          resizeMode="contain"
+        <MaterialIcons
+          name="policy"
+          size={80}
+          color={theme.colors.primary[500]}
+          style={styles.logo}
         />
         <Text 
           style={[
@@ -95,7 +126,13 @@ export default function LanguageSelectionScreen() {
               ]}
               onPress={() => handleLanguageSelect(lang.code)}
             >
-              <Image source={lang.flag} style={styles.flagIcon} />
+              <View style={styles.flagIconContainer}>
+                <MaterialIcons 
+                  name={lang.icon} 
+                  size={24} 
+                  color={theme.colors.primary[500]} 
+                />
+              </View>
               <Text
                 style={[
                   styles.languageName,
@@ -151,8 +188,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 80,
-    height: 80,
+    marginBottom: 10,
   },
   headerText: {
     fontSize: 28,
@@ -180,9 +216,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 2,
   },
-  flagIcon: {
+  flagIconContainer: {
     width: 30,
-    height: 20,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 15,
   },
   languageName: {

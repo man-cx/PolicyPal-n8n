@@ -13,10 +13,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import i18n from '@i18n/index';
 
 import { ThemeProvider, useTheme } from '@contexts/ThemeContext';
 import { AuthProvider, useAuth } from '@contexts/AuthContext';
-import { loadSavedLanguage } from '@i18n/index';
 
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -106,7 +107,24 @@ function MainApp() {
   const { isAuthenticated, isInitialized } = useAuth();
 
   useEffect(() => {
-    // Load saved language preference
+    // Load saved language preference or default to English
+    const loadSavedLanguage = async () => {
+      try {
+        const savedLanguage = await AsyncStorage.getItem('USER_LANGUAGE');
+        if (savedLanguage) {
+          await i18n.changeLanguage(savedLanguage);
+        } else {
+          // Default to English
+          await i18n.changeLanguage('en');
+          await AsyncStorage.setItem('USER_LANGUAGE', 'en');
+        }
+      } catch (error) {
+        console.error('Failed to load saved language', error);
+        // Default to English on error
+        await i18n.changeLanguage('en');
+      }
+    };
+
     loadSavedLanguage();
   }, []);
 
