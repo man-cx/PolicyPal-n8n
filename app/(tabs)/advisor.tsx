@@ -15,6 +15,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
 import { useTheme } from '@contexts/ThemeContext';
+import { ChatBubble, TypingIndicator } from '../../src/components';
 
 // Message type definition
 interface Message {
@@ -59,6 +60,16 @@ export default function AdvisorScreen() {
     }
   }, [messages, isTyping]);
 
+  // Add a componentDidMount-like effect to print theme values for debugging
+  useEffect(() => {
+    console.log('Theme colors:', JSON.stringify({
+      neutral800: theme.colors.neutral[800],
+      textLight: theme.colors.text.light,
+      textDark: theme.colors.text.dark,
+      textMuted: theme.colors.text.muted,
+    }, null, 2));
+  }, [theme]);
+
   const handleSend = () => {
     if (inputText.trim() === '') return;
     
@@ -93,6 +104,11 @@ export default function AdvisorScreen() {
 
   const handleQuickSuggestion = (suggestion: string) => {
     setInputText(suggestion);
+  };
+
+  const handleFeedback = (messageId: string, isPositive: boolean) => {
+    // In a real app, you would send this feedback to your backend
+    console.log(`Feedback for message ${messageId}: ${isPositive ? 'positive' : 'negative'}`);
   };
 
   // Simple response generator
@@ -148,7 +164,7 @@ export default function AdvisorScreen() {
             style={[
               styles.settingsBtn,
               { 
-                backgroundColor: isDarkMode ? theme.colors.neutral[800] : 'white',
+                backgroundColor: isDarkMode ? theme.colors.neutral[800] : theme.colors.background.light,
                 shadowColor: isDarkMode ? 'transparent' : theme.colors.neutral[900],
               }
             ]}
@@ -157,7 +173,7 @@ export default function AdvisorScreen() {
             <MaterialIcons 
               name="history" 
               size={20} 
-              color={isDarkMode ? theme.colors.text.muted : theme.colors.text.muted} 
+              color={isDarkMode ? theme.colors.text.light : theme.colors.text.dark} 
             />
           </TouchableOpacity>
         </View>
@@ -165,16 +181,21 @@ export default function AdvisorScreen() {
         <View style={[
           styles.chatContainer,
           { 
-            backgroundColor: isDarkMode ? theme.colors.neutral[800] : 'white',
+            backgroundColor: isDarkMode ? theme.colors.neutral[800] : theme.colors.background.light,
             shadowColor: isDarkMode ? 'transparent' : theme.colors.neutral[900],
           }
         ]}>
-          <View style={styles.chatHeader}>
+          <View style={[
+            styles.chatHeader,
+            { 
+              borderBottomColor: isDarkMode ? theme.colors.neutral[700] : theme.colors.neutral[200]
+            }
+          ]}>
             <View style={[
               styles.aiAvatar,
               { backgroundColor: theme.colors.primary[500] }
             ]}>
-              <MaterialIcons name="smart-toy" size={20} color="white" />
+              <MaterialIcons name="smart-toy" size={20} color={theme.colors.text.light} />
             </View>
             
             <View style={styles.aiInfo}>
@@ -200,111 +221,30 @@ export default function AdvisorScreen() {
             showsVerticalScrollIndicator={false}
           >
             {messages.map((message) => (
-              <View 
-                key={message.id} 
-                style={[
-                  styles.message,
-                  message.sender === 'ai' ? styles.aiMessage : styles.userMessage
-                ]}
-              >
-                <View style={[
-                  styles.messageContent,
-                  message.sender === 'ai' 
-                    ? [
-                        styles.aiMessageContent, 
-                        { backgroundColor: isDarkMode ? theme.colors.neutral[700] : theme.colors.primary[50] }
-                      ] 
-                    : [
-                        styles.userMessageContent, 
-                        { backgroundColor: theme.colors.primary[500] }
-                      ]
-                ]}>
-                  <Text style={[
-                    styles.messageText,
-                    { 
-                      color: message.sender === 'ai' 
-                        ? (isDarkMode ? theme.colors.text.light : theme.colors.text.dark) 
-                        : 'white' 
-                    }
-                  ]}>
-                    {message.content}
-                  </Text>
-                </View>
-                
-                <Text style={[
-                  styles.messageTime,
-                  message.sender === 'ai' ? styles.aiMessageTime : styles.userMessageTime,
-                  { color: isDarkMode ? theme.colors.text.muted : theme.colors.text.muted }
-                ]}>
-                  {message.timestamp}
-                </Text>
-                
-                {message.sender === 'ai' && (
-                  <View style={styles.feedbackButtons}>
-                    <TouchableOpacity style={[
-                      styles.feedbackBtn,
-                      { 
-                        backgroundColor: isDarkMode ? theme.colors.neutral[700] : 'white',
-                        borderColor: isDarkMode ? theme.colors.neutral[600] : theme.colors.neutral[200]
-                      }
-                    ]}>
-                      <MaterialIcons 
-                        name="thumb-up" 
-                        size={14} 
-                        color={isDarkMode ? theme.colors.text.muted : theme.colors.text.muted} 
-                        style={styles.feedbackIcon}
-                      />
-                      <Text style={[
-                        styles.feedbackText, 
-                        { color: isDarkMode ? theme.colors.text.muted : theme.colors.text.muted }
-                      ]}>
-                        {t('helpful')}
-                      </Text>
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity style={[
-                      styles.feedbackBtn,
-                      { 
-                        backgroundColor: isDarkMode ? theme.colors.neutral[700] : 'white',
-                        borderColor: isDarkMode ? theme.colors.neutral[600] : theme.colors.neutral[200]
-                      }
-                    ]}>
-                      <MaterialIcons 
-                        name="thumb-down" 
-                        size={14} 
-                        color={isDarkMode ? theme.colors.text.muted : theme.colors.text.muted} 
-                        style={styles.feedbackIcon} 
-                      />
-                      <Text style={[
-                        styles.feedbackText, 
-                        { color: isDarkMode ? theme.colors.text.muted : theme.colors.text.muted }
-                      ]}>
-                        {t('not_helpful')}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-              </View>
+              <ChatBubble
+                key={message.id}
+                content={message.content}
+                timestamp={message.timestamp}
+                sender={message.sender}
+                showFeedback={message.sender === 'ai'}
+                onFeedback={(isPositive) => handleFeedback(message.id, isPositive)}
+              />
             ))}
             
-            {isTyping && (
-              <View style={[
-                styles.typingIndicator,
-                { backgroundColor: isDarkMode ? theme.colors.neutral[700] : theme.colors.primary[50] }
-              ]}>
-                <View style={styles.typingDot} />
-                <View style={styles.typingDot} />
-                <View style={styles.typingDot} />
-              </View>
-            )}
+            {isTyping && <TypingIndicator isVisible={isTyping} />}
           </ScrollView>
           
-          <View style={styles.chatFooter}>
+          <View style={[
+            styles.chatFooter,
+            { 
+              borderTopColor: isDarkMode ? theme.colors.neutral[700] : theme.colors.neutral[200]
+            }
+          ]}>
             <View style={[
               styles.messageInputContainer,
               { 
-                backgroundColor: isDarkMode ? theme.colors.neutral[700] : theme.colors.neutral[100],
-                borderColor: isDarkMode ? theme.colors.neutral[600] : theme.colors.neutral[300]
+                backgroundColor: isDarkMode ? theme.colors.neutral[800] : theme.colors.neutral[100],
+                borderColor: isDarkMode ? theme.colors.neutral[700] : theme.colors.neutral[300]
               }
             ]}>
               <TextInput
@@ -313,7 +253,7 @@ export default function AdvisorScreen() {
                   { color: isDarkMode ? theme.colors.text.light : theme.colors.text.dark }
                 ]}
                 placeholder={t('type_a_message')}
-                placeholderTextColor={isDarkMode ? theme.colors.text.muted : theme.colors.text.muted}
+                placeholderTextColor={theme.colors.text.muted}
                 value={inputText}
                 onChangeText={setInputText}
                 multiline
@@ -324,7 +264,7 @@ export default function AdvisorScreen() {
                   <MaterialIcons 
                     name="attach-file" 
                     size={20} 
-                    color={isDarkMode ? theme.colors.text.muted : theme.colors.text.muted} 
+                    color={isDarkMode ? theme.colors.text.light : theme.colors.text.dark} 
                   />
                 </TouchableOpacity>
                 
@@ -348,15 +288,15 @@ export default function AdvisorScreen() {
                   style={[
                     styles.suggestion,
                     { 
-                      backgroundColor: isDarkMode ? theme.colors.neutral[700] : 'white',
-                      borderColor: isDarkMode ? theme.colors.neutral[600] : theme.colors.neutral[300]
+                      backgroundColor: isDarkMode ? theme.colors.neutral[800] : theme.colors.background.light,
+                      borderColor: isDarkMode ? theme.colors.neutral[700] : theme.colors.neutral[200]
                     }
                   ]}
                   onPress={() => handleQuickSuggestion(suggestion)}
                 >
                   <Text style={[
                     styles.suggestionText,
-                    { color: theme.colors.primary[500] }
+                    { color: isDarkMode ? theme.colors.text.light : theme.colors.primary[500] }
                   ]}>
                     {suggestion}
                   </Text>
@@ -417,7 +357,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0, 0, 0, 0.05)',
   },
   aiAvatar: {
     width: 40,
@@ -444,79 +383,9 @@ const styles = StyleSheet.create({
   chatContent: {
     padding: 16,
   },
-  message: {
-    marginBottom: 16,
-    maxWidth: '80%',
-  },
-  aiMessage: {
-    alignSelf: 'flex-start',
-  },
-  userMessage: {
-    alignSelf: 'flex-end',
-  },
-  messageContent: {
-    padding: 14,
-    borderRadius: 18,
-  },
-  aiMessageContent: {
-    borderBottomLeftRadius: 5,
-  },
-  userMessageContent: {
-    borderBottomRightRadius: 5,
-  },
-  messageText: {
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  messageTime: {
-    fontSize: 11,
-    marginTop: 5,
-  },
-  aiMessageTime: {
-    textAlign: 'left',
-  },
-  userMessageTime: {
-    textAlign: 'right',
-  },
-  feedbackButtons: {
-    flexDirection: 'row',
-    marginTop: 6,
-    gap: 8,
-  },
-  feedbackBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  feedbackIcon: {
-    marginRight: 4,
-  },
-  feedbackText: {
-    fontSize: 12,
-  },
-  typingIndicator: {
-    flexDirection: 'row',
-    alignSelf: 'flex-start',
-    padding: 10,
-    borderRadius: 18,
-    marginBottom: 16,
-    alignItems: 'center',
-  },
-  typingDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#4a6cf7',
-    marginHorizontal: 2,
-    opacity: 0.8,
-  },
   chatFooter: {
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(0, 0, 0, 0.05)',
   },
   messageInputContainer: {
     flexDirection: 'row',

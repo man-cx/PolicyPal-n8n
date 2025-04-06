@@ -12,12 +12,16 @@ export default function AdvisorLayout() {
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: isDarkMode ? theme.colors.neutral[800] : theme.colors.neutral[50],
+          backgroundColor: isDarkMode ? theme.colors.neutral[900] : theme.colors.neutral[50],
         },
         headerTintColor: isDarkMode ? theme.colors.text.light : theme.colors.text.dark,
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
         headerShadowVisible: false,
-        headerBackTitleVisible: false,
-        animation: 'slide_from_right',
+        contentStyle: {
+          backgroundColor: isDarkMode ? theme.colors.neutral[900] : theme.colors.neutral[50],
+        },
       }}
     >
       <Stack.Screen
@@ -37,6 +41,7 @@ export default function AdvisorLayout() {
         name="history"
         options={{
           title: t('chat_history'),
+          headerShown: true,
         }}
       />
       <Stack.Screen

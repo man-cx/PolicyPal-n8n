@@ -5,67 +5,81 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Image,
+  SafeAreaView,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Stack, router } from 'expo-router';
 
-import { useTheme } from '../../src/contexts/ThemeContext';
+import { useTheme } from '@contexts/ThemeContext';
 
-// Mock conversation history data
-const mockConversations = [
+// Mock chat history data
+const mockChatHistory = [
   {
     id: '1',
-    topic: 'Health Insurance Coverage',
-    lastMessagePreview: 'Your health insurance policy covers hospital stays, doctor visits...',
-    date: '2023-10-15',
-    time: '14:32',
-    messageCount: 12,
+    title: 'Policy Coverage Questions',
+    preview: 'What\'s my deductible?',
+    date: '2023-09-15',
+    time: '10:32 AM',
+    unread: false,
   },
   {
     id: '2',
-    topic: 'Auto Insurance Claim Process',
-    lastMessagePreview: 'To file an auto insurance claim, you should first document the damage...',
-    date: '2023-09-28',
-    time: '09:15',
-    messageCount: 8,
+    title: 'Claim Filing Process',
+    preview: 'How do I file a claim for my car accident?',
+    date: '2023-09-10',
+    time: '2:45 PM',
+    unread: true,
   },
   {
     id: '3',
-    topic: 'Policy Renewal Options',
-    lastMessagePreview: 'I\'ve analyzed your current policy and found these renewal options...',
-    date: '2023-09-10',
-    time: '16:45',
-    messageCount: 15,
+    title: 'Policy Renewal',
+    preview: 'When does my health insurance expire?',
+    date: '2023-09-05',
+    time: '9:20 AM',
+    unread: false,
   },
   {
     id: '4',
-    topic: 'Premium Payment Methods',
-    lastMessagePreview: 'You can pay your premium using any of these payment methods...',
-    date: '2023-08-22',
-    time: '11:20',
-    messageCount: 5,
+    title: 'Dental Coverage',
+    preview: 'Is dental included in my health plan?',
+    date: '2023-08-28',
+    time: '4:15 PM',
+    unread: false,
   },
   {
     id: '5',
-    topic: 'Coverage Limitations',
-    lastMessagePreview: 'Your current policy has these coverage limitations you should be aware of...',
-    date: '2023-07-15',
-    time: '13:50',
-    messageCount: 9,
+    title: 'Payment Methods',
+    preview: 'Can I set up automatic payments?',
+    date: '2023-08-20',
+    time: '11:05 AM',
+    unread: false,
   },
 ];
+
+interface ChatHistoryItem {
+  id: string;
+  title: string;
+  preview: string;
+  date: string;
+  time: string;
+  unread: boolean;
+}
 
 export default function ChatHistoryScreen() {
   const { t } = useTranslation();
   const { theme, isDarkMode } = useTheme();
 
-  const navigateToChat = (conversationId: string) => {
-    // In a real app, we would load the conversation history
-    router.navigate(`/advisor/chat?conversationId=${conversationId}`);
+  const navigateBack = () => {
+    router.back();
   };
-  
+
+  const openChat = (chatId: string) => {
+    // In a real app, you would load the specific chat
+    // For now, we'll just go back to the main advisor screen
+    router.push('/(tabs)/advisor');
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const today = new Date();
@@ -73,143 +87,144 @@ export default function ChatHistoryScreen() {
     yesterday.setDate(yesterday.getDate() - 1);
     
     if (date.toDateString() === today.toDateString()) {
-      return t('today');
+      return 'Today';
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return t('yesterday');
+      return 'Yesterday';
     } else {
-      return date.toLocaleDateString();
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      });
     }
   };
 
-  const renderConversationItem = ({ item }: { item: typeof mockConversations[0] }) => (
+  const renderChatItem = ({ item }: { item: ChatHistoryItem }) => (
     <TouchableOpacity
       style={[
-        styles.conversationItem,
-        { 
+        styles.chatItem,
+        {
           backgroundColor: isDarkMode ? theme.colors.neutral[800] : 'white',
-          borderColor: isDarkMode ? theme.colors.neutral[700] : theme.colors.neutral[200]
+          borderColor: isDarkMode ? theme.colors.neutral[700] : theme.colors.neutral[200],
         }
       ]}
-      onPress={() => navigateToChat(item.id)}
+      onPress={() => openChat(item.id)}
     >
-      <View style={styles.conversationHeader}>
-        <Text
-          style={[
-            styles.conversationTopic,
-            { color: isDarkMode ? theme.colors.text.light : theme.colors.text.dark }
-          ]}
-          numberOfLines={1}
-        >
-          {item.topic}
-        </Text>
-        <Text
-          style={[
-            styles.conversationDate,
-            { color: isDarkMode ? theme.colors.text.muted : theme.colors.text.muted }
-          ]}
-        >
-          {formatDate(item.date)} • {item.time}
-        </Text>
-      </View>
-      
-      <Text
-        style={[
-          styles.messagePreview,
-          { color: isDarkMode ? theme.colors.text.muted : theme.colors.text.muted }
-        ]}
-        numberOfLines={2}
-      >
-        {item.lastMessagePreview}
-      </Text>
-      
-      <View style={styles.conversationFooter}>
-        <View style={styles.messageCount}>
-          <MaterialIcons
-            name="chat-bubble-outline"
-            size={16}
-            color={isDarkMode ? theme.colors.text.muted : theme.colors.text.muted}
-          />
-          <Text
-            style={[
-              styles.messageCountText,
-              { color: isDarkMode ? theme.colors.text.muted : theme.colors.text.muted }
-            ]}
-          >
-            {item.messageCount} {t('messages')}
-          </Text>
+      <View style={styles.chatItemContent}>
+        <View style={styles.chatIconContainer}>
+          <View style={[
+            styles.chatIcon,
+            { backgroundColor: theme.colors.primary[500] }
+          ]}>
+            <MaterialIcons name="chat" size={20} color="white" />
+          </View>
+          {item.unread && (
+            <View style={[
+              styles.unreadBadge,
+              { backgroundColor: theme.colors.status.error }
+            ]} />
+          )}
         </View>
         
-        <MaterialIcons
-          name="chevron-right"
-          size={20}
-          color={isDarkMode ? theme.colors.text.muted : theme.colors.text.muted}
-        />
+        <View style={styles.chatInfo}>
+          <View style={styles.chatHeader}>
+            <Text style={[
+              styles.chatTitle,
+              { 
+                color: isDarkMode ? theme.colors.text.light : theme.colors.text.dark,
+                fontWeight: item.unread ? '600' : '500',
+              }
+            ]}>
+              {item.title}
+            </Text>
+            <Text style={[
+              styles.chatTime,
+              { color: theme.colors.text.muted }
+            ]}>
+              {formatDate(item.date)}
+            </Text>
+          </View>
+          
+          <Text 
+            style={[
+              styles.chatPreview,
+              { 
+                color: isDarkMode ? theme.colors.text.muted : theme.colors.text.dark,
+                opacity: item.unread ? 1 : 0.8,
+              }
+            ]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {item.preview}
+          </Text>
+        </View>
       </View>
+      
+      <MaterialIcons 
+        name="chevron-right" 
+        size={24} 
+        color={theme.colors.text.muted} 
+      />
     </TouchableOpacity>
   );
 
   return (
-    <View 
-      style={[
-        styles.container,
-        { backgroundColor: isDarkMode ? theme.colors.neutral[900] : theme.colors.neutral[50] }
-      ]}
-    >
-      <Stack.Screen
+    <SafeAreaView style={[
+      styles.container,
+      { backgroundColor: isDarkMode ? theme.colors.neutral[900] : theme.colors.neutral[50] }
+    ]}>
+      <Stack.Screen 
         options={{
-          title: t('conversation_history'),
+          title: t('chat_history'),
           headerStyle: {
             backgroundColor: isDarkMode ? theme.colors.neutral[900] : theme.colors.neutral[50],
           },
           headerTintColor: isDarkMode ? theme.colors.text.light : theme.colors.text.dark,
           headerShadowVisible: false,
+          headerLeft: () => (
+            <TouchableOpacity onPress={navigateBack}>
+              <MaterialIcons 
+                name="arrow-back" 
+                size={24} 
+                color={isDarkMode ? theme.colors.text.light : theme.colors.text.dark} 
+              />
+            </TouchableOpacity>
+          ),
         }}
       />
       
-      {mockConversations.length > 0 ? (
-        <FlatList
-          data={mockConversations}
-          renderItem={renderConversationItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-        />
-      ) : (
-        <View style={styles.emptyContainer}>
-          <MaterialIcons
-            name="chat-bubble-outline"
-            size={64}
-            color={isDarkMode ? theme.colors.neutral[700] : theme.colors.neutral[300]}
-          />
-          <Text
-            style={[
-              styles.emptyTitle,
-              { color: isDarkMode ? theme.colors.text.light : theme.colors.text.dark }
-            ]}
-          >
-            {t('no_conversations_yet')}
-          </Text>
-          <Text
-            style={[
-              styles.emptySubtitle,
-              { color: isDarkMode ? theme.colors.text.muted : theme.colors.text.muted }
-            ]}
-          >
-            {t('start_conversation_with_ai')}
-          </Text>
-          <TouchableOpacity
-            style={[
-              styles.newChatButton,
-              { backgroundColor: theme.colors.primary[500] }
-            ]}
-            onPress={() => router.navigate('/advisor/chat')}
-          >
-            <MaterialIcons name="chat" size={18} color="white" style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>{t('start_new_chat')}</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
+      <View style={styles.header}>
+        <Text style={[
+          styles.title,
+          { color: isDarkMode ? theme.colors.text.light : theme.colors.text.dark }
+        ]}>
+          {t('previous_conversations')}
+        </Text>
+      </View>
+      
+      <FlatList
+        data={mockChatHistory}
+        renderItem={renderChatItem}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.chatList}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View style={styles.emptyState}>
+            <MaterialIcons 
+              name="chat-bubble-outline" 
+              size={48} 
+              color={theme.colors.text.muted} 
+            />
+            <Text style={[
+              styles.emptyStateText,
+              { color: theme.colors.text.muted }
+            ]}>
+              {t('no_chat_history')}
+            </Text>
+          </View>
+        }
+      />
+    </SafeAreaView>
   );
 }
 
@@ -217,78 +232,75 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  listContent: {
+  header: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  chatList: {
     padding: 16,
   },
-  conversationItem: {
+  chatItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
     borderWidth: 1,
+    marginBottom: 12,
   },
-  conversationHeader: {
+  chatItemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  chatIconContainer: {
+    position: 'relative',
+    marginRight: 16,
+  },
+  chatIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  unreadBadge: {
+    position: 'absolute',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    right: 0,
+    top: 0,
+  },
+  chatInfo: {
+    flex: 1,
+  },
+  chatHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
-  conversationTopic: {
+  chatTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    flex: 1,
   },
-  conversationDate: {
+  chatTime: {
     fontSize: 12,
   },
-  messagePreview: {
+  chatPreview: {
     fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 8,
   },
-  conversationFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  messageCount: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  messageCountText: {
-    fontSize: 12,
-    marginLeft: 4,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  emptySubtitle: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  newChatButton: {
-    flexDirection: 'row',
+  emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    paddingVertical: 50,
   },
-  buttonIcon: {
-    marginRight: 8,
-  },
-  buttonText: {
-    color: 'white',
+  emptyStateText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    marginTop: 12,
   },
 }); 

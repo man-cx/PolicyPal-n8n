@@ -23,4 +23,8 @@ export {
 } from './common/Header';
 
 // Button component
-export { default as Button } from './common/Button'; 
+export { default as Button } from './common/Button';
+
+// Export UI components
+export { default as ChatBubble } from './ui/ChatBubble';
+export { default as TypingIndicator } from './ui/TypingIndicator'; 
