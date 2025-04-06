@@ -74,3 +74,6 @@ This is a front-end prototype. In a production environment, the app would connec
 - HTML5
 - CSS3
 - Font Awesome for icons 
+- React Native for mobile components
+- Supabase for backend services
+- n8n for workflow automation
