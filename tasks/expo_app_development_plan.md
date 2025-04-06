@@ -38,9 +38,9 @@
 - [x] Build the app drawer if needed
 
 ## 6. Dashboard/Home Screen
-- [ ] Create dashboard layout
-- [ ] Implement policy overview section
-- [ ] Add quick access shortcuts
+- [x] Create dashboard layout
+- [x] Implement policy overview section
+- [x] Add quick access shortcuts
 
 ## 7. Policy Management
 - [ ] Create policy list screen
