@@ -14,7 +14,10 @@ import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import i18n from '@i18n/index';
+import i18n, { initI18n } from '@i18n/index';
+
+// Initialize i18n
+initI18n();
 
 import { ThemeProvider, useTheme } from '@contexts/ThemeContext';
 import { AuthProvider, useAuth } from '@contexts/AuthContext';
@@ -148,7 +151,11 @@ function MainApp() {
         }}
       >
         <Stack.Screen name="index" />
-        <Stack.Screen name="auth" />
+        <Stack.Screen name="auth/login" />
+        <Stack.Screen name="auth/register" />
+        <Stack.Screen name="auth/verify-email" />
+        <Stack.Screen name="auth/language-selection" />
+        <Stack.Screen name="auth/terms-of-service" />
       </Stack>
     );
   }

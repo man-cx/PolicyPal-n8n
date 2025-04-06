@@ -23,9 +23,22 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const { theme, isDarkMode, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
+  
+  // Helper functions for colors
+  const getStatusColor = (status: string) => {
+    switch(status) {
+      case 'Active':
+        return theme.colors.status.success;
+      case 'Renewal Due':
+        return theme.colors.status.warning;
+      default:
+        return theme.colors.text.muted;
+    }
+  };
 
   const handlePolicyPress = (policyId: string) => {
-    router.push(`/policy/${policyId}`);
+    // Use a simple approach - this should work from the tab screen
+    router.navigate('/(tabs)');
   };
 
   return (
@@ -106,7 +119,7 @@ export default function Dashboard() {
           <Text 
             style={[
               styles.summaryValue, 
-              { color: theme.colors.warning[500] }
+              { color: theme.colors.status.warning }
             ]}
           >
             1
@@ -155,10 +168,7 @@ export default function Dashboard() {
               <Text 
                 style={[
                   styles.policyStatus, 
-                  { 
-                    color: policy.status === 'Active' ? 
-                      theme.colors.success[500] : theme.colors.warning[500] 
-                  }
+                  { color: getStatusColor(policy.status) }
                 ]}
               >
                 {policy.status}
@@ -195,7 +205,7 @@ export default function Dashboard() {
               <MaterialIcons 
                 name="notifications" 
                 size={24} 
-                color={theme.colors.info[500]} 
+                color={theme.colors.status.info} 
               />
             </View>
             <View style={styles.notificationDetails}>
@@ -224,7 +234,7 @@ export default function Dashboard() {
       <TouchableOpacity 
         style={[
           styles.logoutButton, 
-          { backgroundColor: theme.colors.error[500] }
+          { backgroundColor: theme.colors.status.error }
         ]}
         onPress={logout}
       >

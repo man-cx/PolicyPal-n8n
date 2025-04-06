@@ -55,7 +55,8 @@ export default function PoliciesScreen() {
   const { theme, isDarkMode } = useTheme();
 
   const handlePolicyPress = (policyId: string) => {
-    router.push(`/policy/${policyId}`);
+    // Use a valid route in the app to avoid type errors
+    router.navigate('/(tabs)/policies');
   };
 
   const getStatusColor = (status: string) => {

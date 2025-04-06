@@ -35,7 +35,7 @@
 ## 5. Main Navigation Structure
 - [x] Implement tab navigation
 - [x] Create stack navigators for each tab section
-- [ ] Build the app drawer if needed
+- [x] Build the app drawer if needed
 
 ## 6. Dashboard/Home Screen
 - [ ] Create dashboard layout
