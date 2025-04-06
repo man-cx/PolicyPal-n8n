@@ -4,7 +4,12 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
+import { 
+  DrawerContentScrollView, 
+  DrawerItemList, 
+  DrawerItem,
+  DrawerContentComponentProps 
+} from '@react-navigation/drawer';
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
@@ -17,7 +22,7 @@ import { loadSavedLanguage } from '@i18n/index';
 SplashScreen.preventAutoHideAsync();
 
 // Custom drawer content component
-function CustomDrawerContent(props) {
+function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { t } = useTranslation();
   const { theme, isDarkMode, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
@@ -66,7 +71,7 @@ function CustomDrawerContent(props) {
       {/* Theme Toggle */}
       <DrawerItem
         label={isDarkMode ? t('light_mode') : t('dark_mode')}
-        icon={({ color, size }) => (
+        icon={({ color, size }: { color: string; size: number }) => (
           <MaterialIcons
             name={isDarkMode ? 'light-mode' : 'dark-mode'}
             size={size}
@@ -82,7 +87,7 @@ function CustomDrawerContent(props) {
       {user && (
         <DrawerItem
           label={t('logout')}
-          icon={({ color, size }) => (
+          icon={({ color, size }: { color: string; size: number }) => (
             <MaterialIcons name="logout" size={size} color={color} />
           )}
           onPress={handleLogout}
@@ -133,7 +138,7 @@ function MainApp() {
   // Show main app with drawer navigation for authenticated users
   return (
     <Drawer
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      drawerContent={(props: DrawerContentComponentProps) => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerStyle: {
           backgroundColor: isDarkMode ? theme.colors.neutral[800] : theme.colors.neutral[50],
@@ -151,7 +156,7 @@ function MainApp() {
         name="(tabs)"
         options={{
           title: t('home'),
-          drawerIcon: ({ color, size }) => (
+          drawerIcon: ({ color, size }: { color: string; size: number }) => (
             <MaterialIcons name="home" size={size} color={color} />
           ),
         }}
@@ -160,7 +165,7 @@ function MainApp() {
         name="policies"
         options={{
           title: t('my_policies'),
-          drawerIcon: ({ color, size }) => (
+          drawerIcon: ({ color, size }: { color: string; size: number }) => (
             <MaterialIcons name="description" size={size} color={color} />
           ),
         }}
@@ -169,7 +174,7 @@ function MainApp() {
         name="advisor"
         options={{
           title: t('ai_advisor'),
-          drawerIcon: ({ color, size }) => (
+          drawerIcon: ({ color, size }: { color: string; size: number }) => (
             <MaterialIcons name="support-agent" size={size} color={color} />
           ),
         }}
@@ -178,7 +183,7 @@ function MainApp() {
         name="share"
         options={{
           title: t('policy_sharing'),
-          drawerIcon: ({ color, size }) => (
+          drawerIcon: ({ color, size }: { color: string; size: number }) => (
             <MaterialIcons name="share" size={size} color={color} />
           ),
         }}
@@ -187,7 +192,7 @@ function MainApp() {
         name="profile"
         options={{
           title: t('profile_settings'),
-          drawerIcon: ({ color, size }) => (
+          drawerIcon: ({ color, size }: { color: string; size: number }) => (
             <MaterialIcons name="person" size={size} color={color} />
           ),
         }}
