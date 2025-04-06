@@ -55,7 +55,7 @@ const mockConversations = [
     id: '1',
     advisorId: '1',
     advisorName: 'Sarah Johnson',
-    lastMessage: 'I've reviewed your health insurance options and have some recommendations for you.',
+    lastMessage: "I've reviewed your health insurance options and have some recommendations for you.",
     timestamp: '10:30 AM',
     unread: true,
     image: 'https://randomuser.me/api/portraits/women/44.jpg'
