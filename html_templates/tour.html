@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyPal - App Tour</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #eef2ff;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --text-color: #333;
+            --light-text: #6c757d;
+            --border-color: #dee2e6;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .tour-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .tour-container {
+            position: relative;
+            width: 90%;
+            max-width: 500px;
+            height: 70vh;
+            max-height: 650px;
+            border-radius: 20px;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .slide-container {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 80px);
+            overflow: hidden;
+        }
+
+        .slides {
+            display: flex;
+            width: 500%;
+            height: 100%;
+            transition: transform 0.4s ease;
+        }
+
+        .slide {
+            width: 20%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .slide-img {
+            width: 100%;
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .slide-img i {
+            font-size: 6rem;
+            color: var(--primary-color);
+        }
+
+        .slide-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .slide-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--light-text);
+            margin-bottom: 20px;
+        }
+
+        .tour-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .pagination {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pagination-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination-dot.active {
+            background-color: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+        .tour-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-skip {
+            background: none;
+            color: var(--light-text);
+        }
+
+        .btn-skip:hover {
+            color: var(--text-color);
+        }
+
+        .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-next:hover {
+            background-color: #3a5cf6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(74, 108, 247, 0.3);
+        }
+
+        .btn-back {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back:hover {
+            background-color: #dce4ff;
+        }
+
+        .btn-finish {
+            background-color: var(--success-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-finish:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .number-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(74, 108, 247, 0.3);
+        }
+
+        .feature-list {
+            width: 100%;
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .feature-icon {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .feature-text {
+            flex: 1;
+        }
+
+        .feature-title {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .device-mockup {
+            width: 100%;
+            height: 100%;
+            background-color: var(--secondary-color);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .device-screen {
+            position: absolute;
+            top: 12%;
+            left: 10%;
+            right: 10%;
+            bottom: 12%;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .device-header {
+            height: 40px;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .device-content {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        .device-card {
+            background-color: #f1f5ff;
+            border-radius: 8px;
+            padding: 12px;
+            height: 60px;
+        }
+
+        .device-navbar {
+            height: 50px;
+            background-color: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .navbar-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--light-text);
+        }
+
+        .navbar-icon i {
+            font-size: 1.2rem;
+            margin-bottom: 3px;
+        }
+
+        .navbar-icon.active {
+            color: var(--primary-color);
+        }
+
+        .highlight-pointer {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(74, 108, 247, 0.2);
+            border: 2px solid var(--primary-color);
+            animation: pulse 1.5s infinite;
+            z-index: 10;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Position for each slide's highlight */
+        .slide1 .highlight-pointer {
+            top: 45%;
+            left: 20%;
+        }
+
+        .slide2 .highlight-pointer {
+            bottom: 25%;
+            right: 25%;
+        }
+
+        .slide3 .highlight-pointer {
+            top: 35%;
+            right: 30%;
+        }
+
+        .slide4 .highlight-pointer {
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .slide5 .highlight-pointer {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .tour-container {
+                width: 95%;
+                height: 80vh;
+            }
+
+            .slide-title {
+                font-size: 1.5rem;
+            }
+
+            .slide-img {
+                height: 40%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tour-buttons {
+                gap: 8px;
+            }
+
+            .btn {
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+
+            .slide-img i {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tour-overlay">
+        <div class="tour-container">
+            <div class="slide-container">
+                <div class="slides">
+                    <!-- Slide 1: Welcome -->
+                    <div class="slide">
+                        <div class="number-badge">1</div>
+                        <div class="slide-title">Welcome to PolicyPal</div>
+                        <div class="slide-description">
+                            Your all-in-one solution for managing insurance policies. Let's take a quick tour to see what you can do!
+                        </div>
+                        <div class="slide-img">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="feature-text">
+                                    <div class="feature-title">Organize Your Policies</div>
+                                    <div class="feature-desc">Keep all your insurance information in one place</div>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="feature-text">
+                                    <div class="feature-title">Get Smart Advice</div>
+                                    <div class="feature-desc">AI-powered assistant to answer your questions</div>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="feature-text">
+                                    <div class="feature-title">Share Securely</div>
+                                    <div class="feature-desc">Share policies with family and trusted contacts</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2: Manage Policies -->
+                    <div class="slide slide2">
+                        <div class="number-badge">2</div>
+                        <div class="slide-title">Manage Your Policies</div>
+                        <div class="slide-description">
+                            Add, view, and organize all your insurance policies in one secure place.
+                        </div>
+                        <div class="slide-img">
+                            <div class="device-mockup">
+                                <div class="device-screen">
+                                    <div class="device-header">
+                                        <i class="fas fa-file-contract"></i> My Policies
+                                    </div>
+                                    <div class="device-content">
+                                        <div class="device-card"></div>
+                                        <div class="device-card"></div>
+                                        <div class="device-card"></div>
+                                    </div>
+                                    <div class="device-navbar">
+                                        <div class="navbar-icon">
+                                            <i class="fas fa-home"></i>
+                                            Home
+                                        </div>
+                                        <div class="navbar-icon active">
+                                            <i class="fas fa-file-contract"></i>
+                                            Policies
+                                        </div>
+                                        <div class="navbar-icon">
+                                            <i class="fas fa-robot"></i>
+                                            Advisor
+                                        </div>
+                                        <div class="navbar-icon">
+                                            <i class="fas fa-share-alt"></i>
+                                            Share
+                                        </div>
+                                        <div class="navbar-icon">
+                                            <i class="fas fa-user"></i>
+                                            Profile
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="highlight-pointer"></div>
+                            </div>
+                        </div>
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-plus-circle"></i></div>
+                                <div class="feature-text">
+                                    <div class="feature-title">Add New Policies</div>
+                                    <div class="feature-desc">Easily input details for any insurance type</div>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-file-upload"></i></div>
+                                <div class="feature-text">
+                                    <div class="feature-title">Upload Documents</div>
+                                    <div class="feature-desc">Store policy documents securely</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3: AI Advisor -->
+                    <div class="slide slide3">
+                        <div class="number-badge">3</div>
+                        <div class="slide-title">AI Policy Advisor</div>
+                        <div class="slide-description">
+                            Get instant answers to your insurance questions from our smart AI advisor.
+                        </div>
+                        <div class="slide-img">
+                            <div class="device-mockup">
+                                <div class="device-screen">
+                                    <div class="device-header">
+                                        <i class="fas fa-robot"></i> PolicyPal AI
+                                    </div>
+                                    <div class="device-content">
+                                        <div class="device-card"></div>
+                                        <div class="device-card"></div>
+                                        <div class="device-card"></div>
+                                    </div>
+                                    <div class="device-navbar">
+                                        <div class="navbar-icon">
+                                            <i class="fas fa-home"></i>
+                                            Home
+                                        </div>
+                                        <div class="navbar-icon">
+                                            <i class="fas fa-file-contract"></i>
+                                            Policies
+                                        </div>
+                                        <div class="navbar-icon active">
+                                            <i class="fas fa-robot"></i>
+                                            Advisor
+                                        </div>
+                                        <div class="navbar-icon">
+                                            <i class="fas fa-share-alt"></i>
+                                            Share
+                                        </div>
+                                        <div class="navbar-icon">
+                                            <i class="fas fa-user"></i>
+                                            Profile
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="highlight-pointer"></div>
+                            </div>
+                        </div>
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-comment-dots"></i></div>
+                                <div class="feature-text">
+                                    <div class="feature-title">Ask Questions</div>
+                                    <div class="feature-desc">Get instant answers about your coverage</div>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+                                <div class="feature-text">
+                                    <div class="feature-title">Smart Recommendations</div>
+                                    <div class="feature-desc">Receive personalized insurance advice</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4: Share Policies -->
+                    <div class="slide slide4">
+                        <div class="number-badge">4</div>
+                        <div class="slide-title">Share With Family</div>
+                        <div class="slide-description">
+                            Securely share your policies with family members and trusted contacts.
+                        </div>
+                        <div class="slide-img">
+                            <div class="device-mockup">
+                                <div class="device-screen">
+                                    <div class="device-header">
+                                        <i class="fas fa-share-alt"></i> Share Policies
+                                    </div>
+                                    <div class="device-content">
+                                        <div class="device-card"></div>
+                                        <div class="device-card"></div>
+                                        <div class="device-card"></div>
+                                    </div>
+                                    <div class="device-navbar">
+                                        <div class="navbar-icon">
+                                            <i class="fas fa-home"></i>
+                                            Home
+                                        </div>
+                                        <div class="navbar-icon">
+                                            <i class="fas fa-file-contract"></i>
+                                            Policies
+                                        </div>
+                                        <div class="navbar-icon">
+                                            <i class="fas fa-robot"></i>
+                                            Advisor
+                                        </div>
+                                        <div class="navbar-icon active">
+                                            <i class="fas fa-share-alt"></i>
+                                            Share
+                                        </div>
+                                        <div class="navbar-icon">
+                                            <i class="fas fa-user"></i>
+                                            Profile
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="highlight-pointer"></div>
+                            </div>
+                        </div>
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                                <div class="feature-text">
+                                    <div class="feature-title">Secure Access</div>
+                                    <div class="feature-desc">Control exactly what others can see or edit</div>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-history"></i></div>
+                                <div class="feature-text">
+                                    <div class="feature-title">Activity Tracking</div>
+                                    <div class="feature-desc">See when shared policies are viewed</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 5: Ready to Start -->
+                    <div class="slide slide5">
+                        <div class="slide-img">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="slide-title">Ready to Get Started!</div>
+                        <div class="slide-description">
+                            You're all set to use PolicyPal. Add your first policy and start managing your insurance smarter.
+                        </div>
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-question-circle"></i></div>
+                                <div class="feature-text">
+                                    <div class="feature-title">Need Help?</div>
+                                    <div class="feature-desc">Visit the Help Center or contact our support team</div>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-cog"></i></div>
+                                <div class="feature-text">
+                                    <div class="feature-title">Customize Your Experience</div>
+                                    <div class="feature-desc">Change language or theme in the Settings</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tour-controls">
+                <div class="pagination">
+                    <div class="pagination-dot active"></div>
+                    <div class="pagination-dot"></div>
+                    <div class="pagination-dot"></div>
+                    <div class="pagination-dot"></div>
+                    <div class="pagination-dot"></div>
+                </div>
+                <div class="tour-buttons">
+                    <button class="btn btn-skip">Skip Tour</button>
+                    <button class="btn btn-next">Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Interactive tour functionality would be implemented here
+        // For this template, the buttons would handle slide transitions
+        document.addEventListener('DOMContentLoaded', function() {
+            const skipButton = document.querySelector('.btn-skip');
+            
+            // Skip tour and go to dashboard
+            skipButton.addEventListener('click', function() {
+                window.location.href = 'dashboard.html';
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyPal - Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            min-height: 100vh;
+            padding-bottom: 80px; /* For the bottom nav */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .page-title {
+            display: flex;
+            align-items: center;
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        .page-title i {
+            color: #4a6cf7;
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        .back-btn {
+            color: #7f8c8d;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        .back-btn i {
+            margin-right: 5px;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        .card-title {
+            font-size: 18px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+        }
+        .card-title i {
+            margin-right: 10px;
+            color: #4a6cf7;
+            font-size: 18px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        .setting-label {
+            font-size: 16px;
+            color: #2c3e50;
+        }
+        .setting-description {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background-color: #4a6cf7;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        .language-options, .theme-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .option-card {
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            padding: 15px;
+            width: calc(33.333% - 10px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .option-card:hover {
+            border-color: #cfd9e6;
+            background-color: #f8faff;
+        }
+        .option-card.active {
+            border-color: #4a6cf7;
+            background-color: #f0f5ff;
+        }
+        .option-card.active:before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #4a6cf7;
+        }
+        .language-flag {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .language-name {
+            font-size: 14px;
+            color: #2c3e50;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+        .theme-preview {
+            height: 80px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .theme-preview.light {
+            background-color: white;
+            border: 1px solid #e0e6ed;
+        }
+        .theme-preview.dark {
+            background-color: #2c3e50;
+        }
+        .theme-name {
+            font-size: 14px;
+            color: #2c3e50;
+            font-weight: 500;
+            text-align: center;
+        }
+        .theme-preview-elements {
+            padding: 10px;
+        }
+        .theme-preview-header {
+            height: 12px;
+            border-radius: 3px;
+            margin-bottom: 8px;
+        }
+        .theme-preview-content {
+            display: flex;
+            gap: 5px;
+        }
+        .theme-preview-sidebar {
+            width: 20px;
+            height: 40px;
+            border-radius: 3px;
+        }
+        .theme-preview-main {
+            flex-grow: 1;
+            height: 40px;
+            border-radius: 3px;
+        }
+        /* Light theme preview elements */
+        .theme-preview.light .theme-preview-header {
+            background-color: #f1f1f1;
+        }
+        .theme-preview.light .theme-preview-sidebar {
+            background-color: #f5f7fa;
+        }
+        .theme-preview.light .theme-preview-main {
+            background-color: #f9fafc;
+        }
+        /* Dark theme preview elements */
+        .theme-preview.dark .theme-preview-header {
+            background-color: #34495e;
+        }
+        .theme-preview.dark .theme-preview-sidebar {
+            background-color: #2c3e50;
+        }
+        .theme-preview.dark .theme-preview-main {
+            background-color: #34495e;
+        }
+        .theme-preview.dark .theme-name {
+            color: white;
+        }
+        .color-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        .color-option.active {
+            box-shadow: 0 0 0 2px white, 0 0 0 4px #4a6cf7;
+        }
+        .color-option.blue {
+            background-color: #4a6cf7;
+        }
+        .color-option.purple {
+            background-color: #9b59b6;
+        }
+        .color-option.green {
+            background-color: #2ecc71;
+        }
+        .color-option.orange {
+            background-color: #e67e22;
+        }
+        .color-option.red {
+            background-color: #e74c3c;
+        }
+        .btn {
+            background: #4a6cf7;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background: #3a5cf6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 108, 247, 0.2);
+        }
+        nav.bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 0;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        .nav-item.active {
+            color: #4a6cf7;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .option-card {
+                width: calc(50% - 10px);
+            }
+        }
+        @media (max-width: 480px) {
+            .option-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="page-title">
+                <i class="fas fa-cog"></i>
+                Settings
+            </div>
+            <a href="dashboard.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </header>
+        
+        <!-- Language Settings -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-language"></i>
+                    Language Settings
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="setting-label">Select Your Preferred Language</div>
+                <div class="setting-description">All content will be displayed in your selected language</div>
+                
+                <div class="language-options">
+                    <div class="option-card active">
+                        <div class="language-flag">🇺🇸</div>
+                        <div class="language-name">English</div>
+                    </div>
+                    
+                    <div class="option-card">
+                        <div class="language-flag">🇹🇼</div>
+                        <div class="language-name">繁體中文 (Traditional Chinese)</div>
+                    </div>
+                    
+                    <div class="option-card">
+                        <div class="language-flag">🇨🇳</div>
+                        <div class="language-name">简体中文 (Simplified Chinese)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Theme Settings -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-palette"></i>
+                    Theme Settings
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="setting-label">Choose Your Display Mode</div>
+                <div class="setting-description">Select between light and dark themes</div>
+                
+                <div class="theme-options">
+                    <div class="option-card active">
+                        <div class="theme-preview light">
+                            <div class="theme-preview-elements">
+                                <div class="theme-preview-header"></div>
+                                <div class="theme-preview-content">
+                                    <div class="theme-preview-sidebar"></div>
+                                    <div class="theme-preview-main"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="theme-name">Light Mode</div>
+                    </div>
+                    
+                    <div class="option-card">
+                        <div class="theme-preview dark">
+                            <div class="theme-preview-elements">
+                                <div class="theme-preview-header"></div>
+                                <div class="theme-preview-content">
+                                    <div class="theme-preview-sidebar"></div>
+                                    <div class="theme-preview-main"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="theme-name">Dark Mode</div>
+                    </div>
+                </div>
+                
+                <div class="setting-label" style="margin-top: 20px;">Accent Color</div>
+                <div class="setting-description">Personalize your app with a preferred accent color</div>
+                
+                <div class="color-options">
+                    <div class="color-option blue active"></div>
+                    <div class="color-option purple"></div>
+                    <div class="color-option green"></div>
+                    <div class="color-option orange"></div>
+                    <div class="color-option red"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notification Settings -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-bell"></i>
+                    Notification Settings
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Policy Renewals</div>
+                        <div class="setting-description">Get reminded when policies are up for renewal</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Premium Payments</div>
+                        <div class="setting-description">Receive notifications about upcoming premium payments</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Policy Updates</div>
+                        <div class="setting-description">Get notified when your policies are updated</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Shared Policy Activity</div>
+                        <div class="setting-description">Receive alerts when others interact with your shared policies</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Marketing Communications</div>
+                        <div class="setting-description">Receive updates, offers, and tips</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <button type="button" class="btn">Save Changes</button>
+    </div>
+    
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="policy-list.html" class="nav-item">
+                <i class="fas fa-file-contract"></i>
+                Policies
+            </a>
+            <a href="advisor.html" class="nav-item">
+                <i class="fas fa-robot"></i>
+                Advisor
+            </a>
+            <a href="share.html" class="nav-item">
+                <i class="fas fa-share-alt"></i>
+                Share
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <i class="fas fa-user"></i>
+                Profile
+            </a>
+        </div>
+    </nav>
+</body>
+</html> 

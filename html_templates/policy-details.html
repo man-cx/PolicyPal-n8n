@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyPal - Policy Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #eef2ff;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --text-color: #333;
+            --light-text: #6c757d;
+            --border-color: #dee2e6;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h1 i {
+            color: var(--primary-color);
+        }
+
+        .back-button {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .policy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .policy-type {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .policy-status {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .policy-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .policy-actions button, .policy-actions a {
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+        }
+
+        .edit-btn {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .share-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .delete-btn {
+            background-color: #ffebee;
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+
+        .policy-details h2 {
+            font-size: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: var(--light-text);
+        }
+
+        .detail-value {
+            text-align: right;
+            max-width: 60%;
+            word-break: break-word;
+        }
+
+        .documents-section h2 {
+            font-size: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .document-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .document-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .document-name {
+            font-weight: bold;
+        }
+
+        .document-date {
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .document-actions a {
+            color: var(--primary-color);
+            margin-left: 10px;
+            text-decoration: none;
+        }
+
+        .add-document-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .claims-section h2 {
+            font-size: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .claim-item {
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            margin-bottom: 10px;
+        }
+
+        .claim-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .claim-title {
+            font-weight: bold;
+        }
+
+        .claim-date {
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .claim-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-approved {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+
+        .status-rejected {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .claim-amount {
+            font-weight: bold;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--light-text);
+            font-size: 0.8rem;
+            width: 20%;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .policy-header {
+                flex-direction: column;
+            }
+            
+            .policy-actions {
+                margin-top: 15px;
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+            }
+            
+            .detail-value {
+                text-align: left;
+                max-width: 100%;
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="policy-list.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <h1><i class="fas fa-file-contract"></i> Policy Details</h1>
+        <div></div> <!-- Empty div for flex spacing -->
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <div class="policy-header">
+                <div>
+                    <div class="policy-type">Health Insurance</div>
+                    <h2>ABC Health Insurance Plan</h2>
+                    <p>Policy #HL-12345</p>
+                    <div class="policy-status">Active</div>
+                </div>
+                <div class="policy-actions">
+                    <a href="edit-policy.html?id=HL-12345" class="edit-btn">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="share.html?id=HL-12345" class="share-btn">
+                        <i class="fas fa-share-alt"></i> Share
+                    </a>
+                    <button class="delete-btn">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            
+            <div class="policy-details">
+                <h2>Policy Information</h2>
+                <div class="detail-row">
+                    <div class="detail-label">Insurer</div>
+                    <div class="detail-value">ABC Insurance Company</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Policy Number</div>
+                    <div class="detail-value">HL-12345</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Type</div>
+                    <div class="detail-value">Health Insurance</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Start Date</div>
+                    <div class="detail-value">January 1, 2023</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">End Date</div>
+                    <div class="detail-value">December 31, 2023</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Premium Amount</div>
+                    <div class="detail-value">$350.00</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Premium Frequency</div>
+                    <div class="detail-value">Monthly</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Coverage Amount</div>
+                    <div class="detail-value">$1,000,000</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Deductible</div>
+                    <div class="detail-value">$500</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Beneficiaries</div>
+                    <div class="detail-value">Jane Doe (Spouse)</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Notes</div>
+                    <div class="detail-value">Family plan covering primary insured, spouse, and dependents under 26 years of age.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card documents-section">
+            <h2>Policy Documents</h2>
+            <div class="document-item">
+                <div class="document-info">
+                    <i class="fas fa-file-pdf document-icon"></i>
+                    <div>
+                        <div class="document-name">Policy Contract.pdf</div>
+                        <div class="document-date">Uploaded on Jan 15, 2023</div>
+                    </div>
+                </div>
+                <div class="document-actions">
+                    <a href="#" title="View"><i class="fas fa-eye"></i></a>
+                    <a href="#" title="Download"><i class="fas fa-download"></i></a>
+                    <a href="#" title="Delete"><i class="fas fa-trash"></i></a>
+                </div>
+            </div>
+            <div class="document-item">
+                <div class="document-info">
+                    <i class="fas fa-file-image document-icon"></i>
+                    <div>
+                        <div class="document-name">Insurance Card.jpg</div>
+                        <div class="document-date">Uploaded on Jan 15, 2023</div>
+                    </div>
+                </div>
+                <div class="document-actions">
+                    <a href="#" title="View"><i class="fas fa-eye"></i></a>
+                    <a href="#" title="Download"><i class="fas fa-download"></i></a>
+                    <a href="#" title="Delete"><i class="fas fa-trash"></i></a>
+                </div>
+            </div>
+            <a href="document-upload.html?id=HL-12345" class="add-document-btn">
+                <i class="fas fa-plus"></i> Add Document
+            </a>
+        </div>
+
+        <div class="card claims-section">
+            <h2>Claims History</h2>
+            <div class="claim-item">
+                <div class="claim-header">
+                    <div class="claim-title">Annual Checkup</div>
+                    <div class="claim-date">March 15, 2023</div>
+                </div>
+                <div class="claim-details">
+                    <div>Service Provider: City Medical Center</div>
+                    <div class="detail-row">
+                        <div>Amount: <span class="claim-amount">$250.00</span></div>
+                        <div class="claim-status status-approved">Approved</div>
+                    </div>
+                </div>
+            </div>
+            <div class="claim-item">
+                <div class="claim-header">
+                    <div class="claim-title">Prescription Medication</div>
+                    <div class="claim-date">April 10, 2023</div>
+                </div>
+                <div class="claim-details">
+                    <div>Service Provider: Downtown Pharmacy</div>
+                    <div class="detail-row">
+                        <div>Amount: <span class="claim-amount">$75.00</span></div>
+                        <div class="claim-status status-pending">Pending</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="policy-list.html" class="nav-item active">
+                <i class="fas fa-file-contract"></i>
+                Policies
+            </a>
+            <a href="advisor.html" class="nav-item">
+                <i class="fas fa-robot"></i>
+                Advisor
+            </a>
+            <a href="share.html" class="nav-item">
+                <i class="fas fa-share-alt"></i>
+                Share
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                Profile
+            </a>
+        </div>
+    </nav>
+</body>
+</html> 

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyPal - Help Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #eef2ff;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --text-color: #333;
+            --light-text: #6c757d;
+            --border-color: #dee2e6;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h1 i {
+            color: var(--primary-color);
+        }
+
+        .back-button {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+
+        .help-categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-card {
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: transform 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .category-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .category-description {
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            margin: 20px 0 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .popular-topics {
+            margin-bottom: 20px;
+        }
+
+        .topic-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: background-color 0.2s ease;
+        }
+
+        .topic-item:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .topic-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .topic-item:hover .topic-icon {
+            background-color: white;
+        }
+
+        .topic-content {
+            flex: 1;
+        }
+
+        .topic-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .topic-description {
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .topic-item i.fa-chevron-right {
+            color: var(--light-text);
+        }
+
+        .support-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .support-option {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease;
+        }
+
+        .support-option:hover {
+            transform: translateY(-5px);
+        }
+
+        .support-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .support-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .support-description {
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--light-text);
+            font-size: 0.8rem;
+            width: 20%;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .help-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .support-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="profile.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <h1><i class="fas fa-question-circle"></i> Help Center</h1>
+        <div></div> <!-- Empty div for flex spacing -->
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <div class="search-bar">
+                <input type="text" placeholder="Search for help topics...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="help-categories">
+                <a href="faqs.html" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-question"></i>
+                    </div>
+                    <div class="category-title">FAQs</div>
+                    <div class="category-description">Frequently asked questions</div>
+                </a>
+                
+                <a href="#" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <div class="category-title">Policy Management</div>
+                    <div class="category-description">Managing your insurance policies</div>
+                </a>
+                
+                <a href="#" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="category-title">AI Advisor</div>
+                    <div class="category-description">Using the AI policy advisor</div>
+                </a>
+                
+                <a href="#" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <div class="category-title">Policy Sharing</div>
+                    <div class="category-description">Sharing policies with others</div>
+                </a>
+            </div>
+
+            <div class="section-title">
+                <i class="fas fa-star"></i> Popular Topics
+            </div>
+            <div class="popular-topics">
+                <a href="#" class="topic-item">
+                    <div class="topic-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="topic-content">
+                        <div class="topic-title">How to add a new policy</div>
+                        <div class="topic-description">Learn how to add and set up a new insurance policy</div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <a href="#" class="topic-item">
+                    <div class="topic-icon">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <div class="topic-content">
+                        <div class="topic-title">Uploading policy documents</div>
+                        <div class="topic-description">How to upload and manage your policy documents</div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <a href="#" class="topic-item">
+                    <div class="topic-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <div class="topic-content">
+                        <div class="topic-title">Sharing policies with family</div>
+                        <div class="topic-description">Setting up permissions and sharing your policies</div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <a href="#" class="topic-item">
+                    <div class="topic-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="topic-content">
+                        <div class="topic-title">Managing notifications</div>
+                        <div class="topic-description">How to set up and customize your notifications</div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+
+            <div class="section-title">
+                <i class="fas fa-headset"></i> Need More Help?
+            </div>
+            <div class="support-options">
+                <a href="contact-support.html" class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="support-title">Email Support</div>
+                    <div class="support-description">Get help via email</div>
+                </a>
+                
+                <a href="contact-support.html" class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="support-title">Live Chat</div>
+                    <div class="support-description">Chat with our support team</div>
+                </a>
+                
+                <a href="contact-support.html" class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="support-title">Phone Support</div>
+                    <div class="support-description">Call our helpline</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="policy-list.html" class="nav-item">
+                <i class="fas fa-file-contract"></i>
+                Policies
+            </a>
+            <a href="advisor.html" class="nav-item">
+                <i class="fas fa-robot"></i>
+                Advisor
+            </a>
+            <a href="share.html" class="nav-item">
+                <i class="fas fa-share-alt"></i>
+                Share
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <i class="fas fa-user"></i>
+                Profile
+            </a>
+        </div>
+    </nav>
+</body>
+</html> 

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyPal - FAQs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #eef2ff;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --text-color: #333;
+            --light-text: #6c757d;
+            --border-color: #dee2e6;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h1 i {
+            color: var(--primary-color);
+        }
+
+        .back-button {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+
+        .faq-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .category-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .faq-item {
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 15px;
+            background-color: #f8f9fa;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .faq-answer {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-answer-content {
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .faq-item.active .faq-question {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 1000px;
+        }
+
+        .faq-item.active .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .fa-chevron-down {
+            transition: transform 0.3s ease;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            margin: 20px 0 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .contact-support {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+        }
+
+        .contact-support h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .contact-support p {
+            margin-bottom: 15px;
+            color: var(--light-text);
+        }
+
+        .contact-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.2s ease;
+        }
+
+        .contact-btn:hover {
+            background-color: #3a5bd9;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--light-text);
+            font-size: 0.8rem;
+            width: 20%;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .faq-categories {
+                overflow-x: auto;
+                padding-bottom: 10px;
+                flex-wrap: nowrap;
+            }
+            
+            .category-tab {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="help-center.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <h1><i class="fas fa-question-circle"></i> Frequently Asked Questions</h1>
+        <div></div> <!-- Empty div for flex spacing -->
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <div class="search-bar">
+                <input type="text" id="faq-search" placeholder="Search FAQs...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="faq-categories">
+                <div class="category-tab active" data-category="all">All</div>
+                <div class="category-tab" data-category="account">Account</div>
+                <div class="category-tab" data-category="policies">Policies</div>
+                <div class="category-tab" data-category="advisor">AI Advisor</div>
+                <div class="category-tab" data-category="sharing">Sharing</div>
+                <div class="category-tab" data-category="billing">Billing</div>
+            </div>
+
+            <div class="section-title">
+                <i class="fas fa-question"></i> General Questions
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item" data-category="account">
+                    <div class="faq-question">
+                        <span>What is PolicyPal?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            PolicyPal is a comprehensive insurance policy management app designed to help you store, organize, and manage all your insurance policies in one place. It provides features such as document storage, policy sharing with family members, and an AI advisor to answer questions about your coverage.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-category="account">
+                    <div class="faq-question">
+                        <span>How do I create an account?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            To create an account, download the PolicyPal app from the App Store or Google Play Store, then click on "Register" on the welcome screen. You'll need to provide your email address and create a password. After verifying your email, you can set up your profile and start adding your insurance policies.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-category="account">
+                    <div class="faq-question">
+                        <span>Is my data secure?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Yes, SecurityPal takes data security very seriously. All your data is encrypted both during transmission and while stored on our servers. We use industry-standard security protocols and regular security audits to ensure your information remains private and protected. We never share your data with third parties without your explicit consent.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-category="policies">
+                    <div class="faq-question">
+                        <span>What types of insurance policies can I manage?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            PolicyPal supports a wide range of insurance types including health, life, auto, home, travel, business, and more. If you have a policy type that doesn't fit into our predefined categories, you can use the "Other" category and customize it to your needs.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-category="policies">
+                    <div class="faq-question">
+                        <span>How do I add a new policy?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            To add a new policy, navigate to the Policies tab and tap the "+" button. Select the policy type, then fill in the details like insurer name, policy number, coverage amounts, and dates. You can also upload related documents such as policy contracts or insurance cards. Once completed, tap "Save" to add the policy to your account.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-category="sharing">
+                    <div class="faq-question">
+                        <span>How can I share my policy with family members?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            To share a policy, go to the Sharing tab or open the specific policy and tap the "Share" button. Enter the email address of the person you want to share with and select their permission level (view-only, edit, or full access). They will receive an invitation to create an account if they don't already have one, and the policy will appear in their account once they accept.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-category="advisor">
+                    <div class="faq-question">
+                        <span>What is the AI Policy Advisor?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            The AI Policy Advisor is an intelligent assistant that can answer questions about your insurance policies. It analyzes your policy details to provide personalized information about coverage, deductibles, exclusions, and more. You can ask questions in natural language, such as "Does my health insurance cover dental?" or "When is my auto policy renewal date?"
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-category="billing">
+                    <div class="faq-question">
+                        <span>Is PolicyPal free to use?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            PolicyPal offers a free basic plan that allows you to store up to 3 policies with limited features. For full access to all features, including unlimited policies, advanced AI advisor capabilities, and priority support, you can upgrade to PolicyPal Premium for a monthly or annual subscription fee. See our pricing page for current rates and promotional offers.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-support">
+                <h3>Can't find what you're looking for?</h3>
+                <p>Our support team is here to help with any questions or issues you might have.</p>
+                <a href="contact-support.html" class="contact-btn">
+                    <i class="fas fa-headset"></i> Contact Support
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="policy-list.html" class="nav-item">
+                <i class="fas fa-file-contract"></i>
+                Policies
+            </a>
+            <a href="advisor.html" class="nav-item">
+                <i class="fas fa-robot"></i>
+                Advisor
+            </a>
+            <a href="share.html" class="nav-item">
+                <i class="fas fa-share-alt"></i>
+                Share
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <i class="fas fa-user"></i>
+                Profile
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // FAQ accordion functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                faqItem.classList.toggle('active');
+            });
+        });
+        
+        // Category tab filtering
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update active tab
+                document.querySelectorAll('.category-tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                tab.classList.add('active');
+                
+                const category = tab.getAttribute('data-category');
+                
+                // Filter FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    if (category === 'all' || item.getAttribute('data-category') === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Search functionality
+        document.getElementById('faq-search').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            document.querySelectorAll('.faq-item').forEach(item => {
+                const question = item.querySelector('.faq-question span').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer-content').textContent.toLowerCase();
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

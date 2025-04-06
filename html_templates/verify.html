@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyPal - Email Verification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background-color: white;
+            border-radius: 20px;
+            padding: 40px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        .logo {
+            font-size: 35px;
+            color: #4a6cf7;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        p {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #7f8c8d;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .email {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 15px;
+        }
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #e0e6ed;
+            color: #7f8c8d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .step.active .step-number {
+            background-color: #4a6cf7;
+            color: white;
+        }
+        .step-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: center;
+        }
+        .step.active .step-label {
+            color: #4a6cf7;
+            font-weight: bold;
+        }
+        .step-connector {
+            width: 50px;
+            height: 2px;
+            background-color: #e0e6ed;
+            margin-top: 15px;
+        }
+        .step.completed .step-number {
+            background-color: #4a6cf7;
+            color: white;
+        }
+        .step.completed .step-number:before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+        }
+        .verification-code {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .code-input {
+            width: 50px;
+            height: 60px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 5px;
+            color: #2c3e50;
+            transition: all 0.3s;
+        }
+        .code-input:focus {
+            border-color: #4a6cf7;
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+            outline: none;
+        }
+        .btn {
+            background-color: #4a6cf7;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            display: inline-block;
+            text-decoration: none;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(74, 108, 247, 0.3);
+        }
+        .btn:hover {
+            background-color: #3a5cf6;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(74, 108, 247, 0.4);
+        }
+        .btn.disabled {
+            background-color: #e0e6ed;
+            color: #7f8c8d;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn.disabled:hover {
+            transform: none;
+        }
+        .resend-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .resend-link a {
+            color: #4a6cf7;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .timer {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .back-link {
+            margin-top: 20px;
+            color: #7f8c8d;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .back-link i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <i class="fas fa-envelope-open-text"></i>
+        </div>
+        <h1>Verify Your Email</h1>
+        <p>We've sent a verification code to <span class="email">user@example.com</span></p>
+        
+        <div class="steps">
+            <div class="step completed">
+                <div class="step-number"><i class="fas fa-check"></i></div>
+                <div class="step-label">Account</div>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step active">
+                <div class="step-number">2</div>
+                <div class="step-label">Verify</div>
+            </div>
+        </div>
+        
+        <form action="terms.html">
+            <div class="verification-code">
+                <input type="text" class="code-input" maxlength="1" autofocus>
+                <input type="text" class="code-input" maxlength="1">
+                <input type="text" class="code-input" maxlength="1">
+                <input type="text" class="code-input" maxlength="1">
+                <input type="text" class="code-input" maxlength="1">
+                <input type="text" class="code-input" maxlength="1">
+            </div>
+            
+            <button type="submit" class="btn disabled">Verify Email</button>
+        </form>
+        
+        <div class="timer">
+            <i class="fas fa-clock"></i> Resend code in <span id="countdown">59</span> seconds
+        </div>
+        
+        <div class="resend-link">
+            <a href="#" id="resend-link" style="opacity: 0.5; pointer-events: none;">Resend Code</a>
+        </div>
+        
+        <a href="register.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+</body>
+</html> 

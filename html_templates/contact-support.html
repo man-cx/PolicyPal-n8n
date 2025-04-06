@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyPal - Contact Support</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #eef2ff;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --text-color: #333;
+            --light-text: #6c757d;
+            --border-color: #dee2e6;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h1 i {
+            color: var(--primary-color);
+        }
+
+        .back-button {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .support-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .support-option {
+            flex: 1;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .support-option:hover {
+            transform: translateY(-5px);
+            background-color: var(--secondary-color);
+        }
+
+        .support-option.active {
+            background-color: var(--secondary-color);
+            border-color: var(--primary-color);
+        }
+
+        .support-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .support-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .support-description {
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .contact-content {
+            display: none;
+        }
+
+        .contact-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            width: 100%;
+        }
+
+        .chat-container {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+        }
+
+        .chat-input {
+            display: flex;
+            border-top: 1px solid var(--border-color);
+            padding: 10px;
+            background-color: white;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+
+        .chat-input button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 10px;
+        }
+
+        .user-message {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .user-message .message-content {
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 0;
+        }
+
+        .support-message {
+            margin-right: auto;
+        }
+
+        .support-message .message-content {
+            background-color: white;
+            border-bottom-left-radius: 0;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: var(--light-text);
+            margin-top: 5px;
+        }
+
+        .contact-info {
+            margin: 20px 0;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .contact-details h3 {
+            margin-bottom: 5px;
+        }
+
+        .contact-details p {
+            color: var(--light-text);
+        }
+
+        .support-hours {
+            background-color: var(--secondary-color);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .support-hours h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .hours-table {
+            width: 100%;
+        }
+
+        .hours-table td {
+            padding: 5px 0;
+        }
+
+        .hours-table tr td:last-child {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--light-text);
+            font-size: 0.8rem;
+            width: 20%;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .support-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="help-center.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <h1><i class="fas fa-headset"></i> Contact Support</h1>
+        <div></div> <!-- Empty div for flex spacing -->
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <div class="section-title">
+                <i class="fas fa-headset"></i> How Can We Help You?
+            </div>
+            
+            <div class="support-options">
+                <div class="support-option active" data-target="email-form">
+                    <div class="support-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="support-title">Email Support</div>
+                    <div class="support-description">Get help via email</div>
+                </div>
+                
+                <div class="support-option" data-target="live-chat">
+                    <div class="support-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="support-title">Live Chat</div>
+                    <div class="support-description">Chat with our support team</div>
+                </div>
+                
+                <div class="support-option" data-target="phone-support">
+                    <div class="support-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="support-title">Phone Support</div>
+                    <div class="support-description">Call our helpline</div>
+                </div>
+            </div>
+            
+            <!-- Email Support Form -->
+            <div id="email-form" class="contact-content active">
+                <form id="support-form">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" required>
+                            <option value="">-- Select a topic --</option>
+                            <option value="account">Account Issues</option>
+                            <option value="billing">Billing & Subscription</option>
+                            <option value="policies">Policy Management</option>
+                            <option value="advisor">AI Advisor</option>
+                            <option value="sharing">Policy Sharing</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Attachments (Optional)</label>
+                        <input type="file" multiple>
+                        <p style="font-size: 0.9rem; color: var(--light-text); margin-top: 5px;">
+                            You can attach screenshots or documents to help us better understand your issue.
+                            Maximum 5 files (10MB total).
+                        </p>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Live Chat -->
+            <div id="live-chat" class="contact-content">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <i class="fas fa-comments"></i> PolicyPal Support Chat
+                    </div>
+                    
+                    <div class="chat-messages">
+                        <div class="message support-message">
+                            <div class="message-content">
+                                Hello! 👋 Welcome to PolicyPal Support. How can I help you today?
+                            </div>
+                            <div class="message-time">Today, 10:30 AM</div>
+                        </div>
+                        
+                        <div class="message user-message">
+                            <div class="message-content">
+                                Hi, I'm having trouble uploading documents to my policy.
+                            </div>
+                            <div class="message-time">Today, 10:31 AM</div>
+                        </div>
+                        
+                        <div class="message support-message">
+                            <div class="message-content">
+                                I'm sorry to hear that. Could you please tell me what type of document you're trying to upload and what error message you're seeing?
+                            </div>
+                            <div class="message-time">Today, 10:32 AM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <input type="text" placeholder="Type your message here...">
+                        <button><i class="fas fa-paper-plane"></i> Send</button>
+                    </div>
+                </div>
+                
+                <p style="font-size: 0.9rem; color: var(--light-text); margin-top: 10px; text-align: center;">
+                    Live chat support is available Monday to Friday, 9:00 AM - 6:00 PM Eastern Time.
+                </p>
+            </div>
+            
+            <!-- Phone Support -->
+            <div id="phone-support" class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Customer Support Hotline</h3>
+                            <p>For general inquiries and technical support</p>
+                            <a href="tel:1-800-123-4567" style="color: var(--primary-color); font-weight: bold; font-size: 1.2rem; text-decoration: none;">
+                                1-800-123-4567
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Billing Support</h3>
+                            <p>For subscription and payment issues</p>
+                            <a href="tel:1-800-765-4321" style="color: var(--primary-color); font-weight: bold; font-size: 1.2rem; text-decoration: none;">
+                                1-800-765-4321
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="support-hours">
+                    <h3><i class="fas fa-clock"></i> Support Hours</h3>
+                    <table class="hours-table">
+                        <tr>
+                            <td>Monday - Friday</td>
+                            <td>9:00 AM - 8:00 PM ET</td>
+                        </tr>
+                        <tr>
+                            <td>Saturday</td>
+                            <td>10:00 AM - 6:00 PM ET</td>
+                        </tr>
+                        <tr>
+                            <td>Sunday</td>
+                            <td>Closed</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p style="text-align: center; margin: 20px 0;">
+                    <i class="fas fa-info-circle" style="color: var(--primary-color);"></i>
+                    Please have your account email ready when calling for faster service.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="policy-list.html" class="nav-item">
+                <i class="fas fa-file-contract"></i>
+                Policies
+            </a>
+            <a href="advisor.html" class="nav-item">
+                <i class="fas fa-robot"></i>
+                Advisor
+            </a>
+            <a href="share.html" class="nav-item">
+                <i class="fas fa-share-alt"></i>
+                Share
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <i class="fas fa-user"></i>
+                Profile
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // Support option tabs
+        document.querySelectorAll('.support-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // Update active tab
+                document.querySelectorAll('.support-option').forEach(o => {
+                    o.classList.remove('active');
+                });
+                option.classList.add('active');
+                
+                // Show corresponding content
+                const targetId = option.getAttribute('data-target');
+                document.querySelectorAll('.contact-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+        
+        // Form submission
+        document.getElementById('support-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // In a real app, this would send the form data to the server
+            alert('Your message has been sent. We will get back to you within 24 hours.');
+            document.getElementById('support-form').reset();
+        });
+        
+        // Chat functionality
+        const chatInput = document.querySelector('.chat-input input');
+        const chatSendButton = document.querySelector('.chat-input button');
+        const chatMessages = document.querySelector('.chat-messages');
+        
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message) {
+                // Add user message
+                const userMessageHTML = `
+                    <div class="message user-message">
+                        <div class="message-content">
+                            ${message}
+                        </div>
+                        <div class="message-time">Just now</div>
+                    </div>
+                `;
+                chatMessages.insertAdjacentHTML('beforeend', userMessageHTML);
+                
+                // Clear input
+                chatInput.value = '';
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // In a real app, this would send the message to the server and get a response
+                // Simulate support response after a delay
+                setTimeout(() => {
+                    const supportMessageHTML = `
+                        <div class="message support-message">
+                            <div class="message-content">
+                                Thanks for your message. An agent will respond shortly. In the meantime, you might check our FAQs for quick answers.
+                            </div>
+                            <div class="message-time">Just now</div>
+                        </div>
+                    `;
+                    chatMessages.insertAdjacentHTML('beforeend', supportMessageHTML);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1000);
+            }
+        }
+        
+        chatSendButton.addEventListener('click', sendMessage);
+        
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyPal - Policy Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #eef2ff;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --text-color: #333;
+            --light-text: #6c757d;
+            --border-color: #dee2e6;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h1 i {
+            color: var(--primary-color);
+        }
+
+        .back-button {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px 12px 50px;
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-text);
+        }
+
+        .search-voice {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+        }
+
+        .filter-toggle {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            color: var(--text-color);
+            font-weight: bold;
+            transition: background-color 0.2s ease;
+        }
+
+        .filter-toggle:hover {
+            background-color: #dce4ff;
+        }
+
+        .filter-container {
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .filter-section {
+            margin-bottom: 15px;
+        }
+
+        .filter-section h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 12px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-chip.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .filter-chip:hover:not(.active) {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .filter-date-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-date-range input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .filter-amount {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .amount-slider {
+            width: 100%;
+            padding: 10px 0;
+        }
+
+        .amount-range {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .filter-reset {
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            border-radius: 5px;
+            color: var(--light-text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-reset:hover {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .filter-apply {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-apply:hover {
+            background-color: #3a5cf6;
+        }
+
+        .search-results {
+            margin-top: 20px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .results-count {
+            font-weight: bold;
+        }
+
+        .results-sort {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sort-label {
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .sort-select {
+            padding: 5px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: white;
+        }
+
+        .policy-card {
+            display: flex;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .policy-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .policy-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            margin-right: 15px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .policy-details {
+            flex: 1;
+        }
+
+        .policy-type {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .policy-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .policy-info span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .policy-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+
+        .policy-tags {
+            display: flex;
+            gap: 5px;
+        }
+
+        .policy-tag {
+            padding: 2px 8px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            color: var(--light-text);
+        }
+
+        .policy-action {
+            border: none;
+            background: none;
+            color: var(--light-text);
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .policy-action:hover {
+            color: var(--primary-color);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--light-text);
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #e9ecef;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--light-text);
+            font-size: 0.8rem;
+            width: 20%;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .filter-options {
+                justify-content: space-between;
+            }
+
+            .filter-chip {
+                flex: 0 0 calc(48% - 5px);
+                justify-content: center;
+            }
+
+            .filter-date-range {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="policy-list.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <h1><i class="fas fa-search"></i> Search Policies</h1>
+        <div></div> <!-- Empty div for flex spacing -->
+    </header>
+
+    <div class="container">
+        <div class="card search-container">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search by policy name, number or insurer...">
+                <button class="search-voice">
+                    <i class="fas fa-microphone"></i>
+                </button>
+            </div>
+
+            <button class="filter-toggle">
+                <span><i class="fas fa-filter"></i> Filter Options</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+
+            <div class="filter-container">
+                <div class="filter-section">
+                    <h3><i class="fas fa-tag"></i> Policy Type</h3>
+                    <div class="filter-options">
+                        <div class="filter-chip active">All</div>
+                        <div class="filter-chip">Health</div>
+                        <div class="filter-chip">Life</div>
+                        <div class="filter-chip">Auto</div>
+                        <div class="filter-chip">Home</div>
+                        <div class="filter-chip">Travel</div>
+                        <div class="filter-chip">Business</div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3><i class="fas fa-calendar-alt"></i> Policy Date Range</h3>
+                    <div class="filter-date-range">
+                        <input type="date" placeholder="Start Date">
+                        <span>to</span>
+                        <input type="date" placeholder="End Date">
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3><i class="fas fa-dollar-sign"></i> Premium Amount</h3>
+                    <div class="filter-amount">
+                        <input type="range" min="0" max="2000" value="1000" class="amount-slider">
+                        <div class="amount-range">
+                            <span>$0</span>
+                            <span>$2,000+</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3><i class="fas fa-sort"></i> Status</h3>
+                    <div class="filter-options">
+                        <div class="filter-chip active">All</div>
+                        <div class="filter-chip">Active</div>
+                        <div class="filter-chip">Expiring Soon</div>
+                        <div class="filter-chip">Expired</div>
+                        <div class="filter-chip">Pending Renewal</div>
+                    </div>
+                </div>
+
+                <div class="filter-buttons">
+                    <button class="filter-reset">Reset Filters</button>
+                    <button class="filter-apply">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-results">
+            <div class="results-header">
+                <div class="results-count">5 policies found</div>
+                <div class="results-sort">
+                    <span class="sort-label">Sort by:</span>
+                    <select class="sort-select">
+                        <option>Newest First</option>
+                        <option>Oldest First</option>
+                        <option>Name (A-Z)</option>
+                        <option>Premium (High-Low)</option>
+                        <option>Premium (Low-High)</option>
+                    </select>
+                </div>
+            </div>
+
+            <a href="policy-details.html" class="policy-card">
+                <div class="policy-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="policy-details">
+                    <div class="policy-type">Health Insurance</div>
+                    <div class="policy-info">
+                        <span><i class="fas fa-building"></i> ABC Insurance</span>
+                        <span><i class="fas fa-hashtag"></i> HL-12345</span>
+                    </div>
+                    <div class="policy-meta">
+                        <div class="policy-tags">
+                            <span class="policy-tag">Active</span>
+                            <span class="policy-tag">$210/month</span>
+                        </div>
+                        <button class="policy-action"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="policy-details.html" class="policy-card">
+                <div class="policy-icon">
+                    <i class="fas fa-car"></i>
+                </div>
+                <div class="policy-details">
+                    <div class="policy-type">Auto Insurance</div>
+                    <div class="policy-info">
+                        <span><i class="fas fa-building"></i> XYZ Insurance</span>
+                        <span><i class="fas fa-hashtag"></i> AT-54321</span>
+                    </div>
+                    <div class="policy-meta">
+                        <div class="policy-tags">
+                            <span class="policy-tag">Active</span>
+                            <span class="policy-tag">$150/month</span>
+                        </div>
+                        <button class="policy-action"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="policy-details.html" class="policy-card">
+                <div class="policy-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="policy-details">
+                    <div class="policy-type">Home Insurance</div>
+                    <div class="policy-info">
+                        <span><i class="fas fa-building"></i> Home Secure Co.</span>
+                        <span><i class="fas fa-hashtag"></i> HM-78901</span>
+                    </div>
+                    <div class="policy-meta">
+                        <div class="policy-tags">
+                            <span class="policy-tag">Expiring Soon</span>
+                            <span class="policy-tag">$95/month</span>
+                        </div>
+                        <button class="policy-action"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="policy-details.html" class="policy-card">
+                <div class="policy-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="policy-details">
+                    <div class="policy-type">Life Insurance</div>
+                    <div class="policy-info">
+                        <span><i class="fas fa-building"></i> LifeGuard Insurance</span>
+                        <span><i class="fas fa-hashtag"></i> LF-23456</span>
+                    </div>
+                    <div class="policy-meta">
+                        <div class="policy-tags">
+                            <span class="policy-tag">Active</span>
+                            <span class="policy-tag">$75/month</span>
+                        </div>
+                        <button class="policy-action"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="policy-details.html" class="policy-card">
+                <div class="policy-icon">
+                    <i class="fas fa-plane"></i>
+                </div>
+                <div class="policy-details">
+                    <div class="policy-type">Travel Insurance</div>
+                    <div class="policy-info">
+                        <span><i class="fas fa-building"></i> Global Protect</span>
+                        <span><i class="fas fa-hashtag"></i> TR-98765</span>
+                    </div>
+                    <div class="policy-meta">
+                        <div class="policy-tags">
+                            <span class="policy-tag">Expired</span>
+                            <span class="policy-tag">$45/month</span>
+                        </div>
+                        <button class="policy-action"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                </div>
+            </a>
+
+            <!-- No results state (hidden by default) -->
+            <div class="no-results" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h3>No policies found</h3>
+                <p>Try adjusting your search or filters to find what you're looking for.</p>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="policy-list.html" class="nav-item active">
+                <i class="fas fa-file-contract"></i>
+                Policies
+            </a>
+            <a href="advisor.html" class="nav-item">
+                <i class="fas fa-robot"></i>
+                Advisor
+            </a>
+            <a href="share.html" class="nav-item">
+                <i class="fas fa-share-alt"></i>
+                Share
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                Profile
+            </a>
+        </div>
+    </nav>
+</body>
+</html> 

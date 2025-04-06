@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyPal - Share Policies</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            min-height: 100vh;
+            padding-bottom: 80px; /* For the bottom nav */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .page-title {
+            display: flex;
+            align-items: center;
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        .page-title i {
+            color: #4a6cf7;
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        .tab-navigation {
+            display: flex;
+            border-bottom: 1px solid #e0e6ed;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 15px 20px;
+            font-size: 14px;
+            color: #7f8c8d;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            color: #4a6cf7;
+            font-weight: 500;
+        }
+        .tab.active:after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #4a6cf7;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn {
+            background: #4a6cf7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 12px;
+        }
+        .btn i {
+            margin-right: 8px;
+        }
+        .btn:hover {
+            background: #3a5cf6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 108, 247, 0.2);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #2c3e50;
+            transition: all 0.3s;
+            outline: none;
+        }
+        input:focus, select:focus {
+            border-color: #4a6cf7;
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+        }
+        .share-form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .share-form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .shared-policy-list {
+            list-style: none;
+        }
+        .shared-policy-item {
+            padding: 15px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        .shared-policy-item:last-child {
+            border-bottom: none;
+        }
+        .shared-policy-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .policy-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #f0f5ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #4a6cf7;
+        }
+        .policy-title {
+            flex-grow: 1;
+        }
+        .policy-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+        .policy-details {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .shared-with {
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .shared-with-email {
+            color: #4a6cf7;
+            font-weight: 500;
+        }
+        .permission-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        .permission-badge.view {
+            background: #e8f5e9;
+            color: #2ecc71;
+        }
+        .permission-badge.edit {
+            background: #e3f2fd;
+            color: #3498db;
+        }
+        .permission-badge.manage {
+            background: #fff8e1;
+            color: #f39c12;
+        }
+        .shared-policy-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #e0e6ed;
+            background: white;
+        }
+        .action-btn.edit {
+            color: #3498db;
+        }
+        .action-btn.edit:hover {
+            background: #e3f2fd;
+            border-color: #3498db;
+        }
+        .action-btn.revoke {
+            color: #e74c3c;
+        }
+        .action-btn.revoke:hover {
+            background: #fde7e7;
+            border-color: #e74c3c;
+        }
+        .activity-list {
+            list-style: none;
+        }
+        .activity-item {
+            padding: 15px;
+            border-bottom: 1px solid #f1f1f1;
+            display: flex;
+            align-items: flex-start;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f0f5ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #4a6cf7;
+            flex-shrink: 0;
+        }
+        .activity-icon.view {
+            background: #e8f5e9;
+            color: #2ecc71;
+        }
+        .activity-icon.edit {
+            background: #e3f2fd;
+            color: #3498db;
+        }
+        .activity-icon.share {
+            background: #fff8e1;
+            color: #f39c12;
+        }
+        .activity-content {
+            flex-grow: 1;
+        }
+        .activity-text {
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 3px;
+            line-height: 1.5;
+        }
+        .activity-text .highlight {
+            font-weight: 500;
+            color: #4a6cf7;
+        }
+        .activity-time {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .empty-state i {
+            font-size: 60px;
+            color: #e0e6ed;
+            margin-bottom: 20px;
+        }
+        .empty-state h3 {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        nav.bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 0;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        .nav-item.active {
+            color: #4a6cf7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="page-title">
+                <i class="fas fa-share-alt"></i>
+                Share Policies
+            </div>
+        </header>
+        
+        <div class="tab-navigation">
+            <div class="tab active" data-tab="share-new">Share New</div>
+            <div class="tab" data-tab="shared-policies">Shared Policies</div>
+            <div class="tab" data-tab="activity-log">Activity Log</div>
+        </div>
+        
+        <!-- Share New Tab -->
+        <div class="tab-content active" id="share-new">
+            <div class="card">
+                <h2 class="card-title">Share Policy</h2>
+                
+                <form>
+                    <div class="share-form-grid">
+                        <div class="form-group">
+                            <label for="policy-select">Select Policy to Share</label>
+                            <select id="policy-select" required>
+                                <option value="">Select a policy</option>
+                                <option value="health">Health Insurance (ABC Insurance)</option>
+                                <option value="auto">Auto Insurance (XYZ Insurance)</option>
+                                <option value="home">Home Insurance (DEF Insurance)</option>
+                                <option value="life">Life Insurance (GHI Insurance)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="permission-select">Permission Level</label>
+                            <select id="permission-select" required>
+                                <option value="">Select permission</option>
+                                <option value="view">View Only</option>
+                                <option value="edit">View & Edit</option>
+                                <option value="manage">Full Access</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email-input">Recipient's Email</label>
+                        <input type="email" id="email-input" placeholder="Enter email address" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message-input">Add a Message (Optional)</label>
+                        <input type="text" id="message-input" placeholder="e.g. Here's the insurance policy we discussed">
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-share-alt"></i> Share Policy
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Shared Policies Tab -->
+        <div class="tab-content" id="shared-policies">
+            <div class="card">
+                <h2 class="card-title">
+                    Policies You've Shared
+                    <button class="btn btn-sm">
+                        <i class="fas fa-share-alt"></i> Share New
+                    </button>
+                </h2>
+                
+                <ul class="shared-policy-list">
+                    <li class="shared-policy-item">
+                        <div class="shared-policy-header">
+                            <div class="policy-icon">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div class="policy-title">
+                                <div class="policy-name">Health Insurance</div>
+                                <div class="policy-details">ABC Insurance • Policy #HL-12345</div>
+                            </div>
+                        </div>
+                        
+                        <div class="shared-with">
+                            Shared with <span class="shared-with-email">jane.doe@example.com</span>
+                        </div>
+                        
+                        <div>
+                            <span class="permission-badge view">View Only</span>
+                            <span>Shared on May 15, 2023</span>
+                        </div>
+                        
+                        <div class="shared-policy-actions">
+                            <button class="action-btn edit">
+                                <i class="fas fa-edit"></i> Edit Permissions
+                            </button>
+                            <button class="action-btn revoke">
+                                <i class="fas fa-times"></i> Revoke Access
+                            </button>
+                        </div>
+                    </li>
+                    
+                    <li class="shared-policy-item">
+                        <div class="shared-policy-header">
+                            <div class="policy-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="policy-title">
+                                <div class="policy-name">Home Insurance</div>
+                                <div class="policy-details">DEF Insurance • Policy #HM-24680</div>
+                            </div>
+                        </div>
+                        
+                        <div class="shared-with">
+                            Shared with <span class="shared-with-email">john.smith@example.com</span>
+                        </div>
+                        
+                        <div>
+                            <span class="permission-badge edit">View & Edit</span>
+                            <span>Shared on June 3, 2023</span>
+                        </div>
+                        
+                        <div class="shared-policy-actions">
+                            <button class="action-btn edit">
+                                <i class="fas fa-edit"></i> Edit Permissions
+                            </button>
+                            <button class="action-btn revoke">
+                                <i class="fas fa-times"></i> Revoke Access
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title">Policies Shared with You</h2>
+                
+                <ul class="shared-policy-list">
+                    <li class="shared-policy-item">
+                        <div class="shared-policy-header">
+                            <div class="policy-icon">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <div class="policy-title">
+                                <div class="policy-name">Life Insurance</div>
+                                <div class="policy-details">GHI Insurance • Policy #LF-97531</div>
+                            </div>
+                        </div>
+                        
+                        <div class="shared-with">
+                            Shared by <span class="shared-with-email">michael.brown@example.com</span>
+                        </div>
+                        
+                        <div>
+                            <span class="permission-badge manage">Full Access</span>
+                            <span>Shared on April 22, 2023</span>
+                        </div>
+                        
+                        <div class="shared-policy-actions">
+                            <button class="action-btn edit">
+                                <i class="fas fa-eye"></i> View Policy
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Activity Log Tab -->
+        <div class="tab-content" id="activity-log">
+            <div class="card">
+                <h2 class="card-title">Recent Activities</h2>
+                
+                <ul class="activity-list">
+                    <li class="activity-item">
+                        <div class="activity-icon share">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                You shared <span class="highlight">Health Insurance</span> with <span class="highlight">jane.doe@example.com</span> with view-only permissions.
+                            </div>
+                            <div class="activity-time">Today, 10:45 AM</div>
+                        </div>
+                    </li>
+                    
+                    <li class="activity-item">
+                        <div class="activity-icon view">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                <span class="highlight">jane.doe@example.com</span> viewed your <span class="highlight">Health Insurance</span> policy.
+                            </div>
+                            <div class="activity-time">Today, 11:20 AM</div>
+                        </div>
+                    </li>
+                    
+                    <li class="activity-item">
+                        <div class="activity-icon share">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                You shared <span class="highlight">Home Insurance</span> with <span class="highlight">john.smith@example.com</span> with edit permissions.
+                            </div>
+                            <div class="activity-time">June 3, 2023</div>
+                        </div>
+                    </li>
+                    
+                    <li class="activity-item">
+                        <div class="activity-icon edit">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                <span class="highlight">john.smith@example.com</span> updated beneficiary information on your <span class="highlight">Home Insurance</span> policy.
+                            </div>
+                            <div class="activity-time">June 4, 2023</div>
+                        </div>
+                    </li>
+                    
+                    <li class="activity-item">
+                        <div class="activity-icon share">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                <span class="highlight">michael.brown@example.com</span> shared <span class="highlight">Life Insurance</span> with you with full access permissions.
+                            </div>
+                            <div class="activity-time">April 22, 2023</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Empty States (hidden by default) -->
+        <div class="empty-state" style="display: none;">
+            <i class="fas fa-share-alt"></i>
+            <h3>No shared policies</h3>
+            <p>You haven't shared any policies yet or no one has shared with you.</p>
+            <button class="btn">
+                <i class="fas fa-share-alt"></i> Share a Policy
+            </button>
+        </div>
+    </div>
+    
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="policy-list.html" class="nav-item">
+                <i class="fas fa-file-contract"></i>
+                Policies
+            </a>
+            <a href="advisor.html" class="nav-item">
+                <i class="fas fa-robot"></i>
+                Advisor
+            </a>
+            <a href="share.html" class="nav-item active">
+                <i class="fas fa-share-alt"></i>
+                Share
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                Profile
+            </a>
+        </div>
+    </nav>
+    
+    <script>
+        // Simple tab switching functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs and content
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyPal - Language Selection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            background-color: white;
+            border-radius: 20px;
+            padding: 40px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        .logo {
+            font-size: 35px;
+            color: #4a6cf7;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        .language-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .language-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #2c3e50;
+        }
+        .language-option:hover {
+            border-color: #4a6cf7;
+            background-color: #f8faff;
+            transform: translateY(-2px);
+        }
+        .language-option.active {
+            border-color: #4a6cf7;
+            background-color: #f0f5ff;
+        }
+        .flag {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .language-name {
+            font-size: 16px;
+            font-weight: 500;
+            flex-grow: 1;
+            text-align: left;
+        }
+        .language-option.active .check {
+            display: block;
+        }
+        .check {
+            color: #4a6cf7;
+            font-size: 18px;
+            display: none;
+        }
+        .btn {
+            background-color: #4a6cf7;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            display: inline-block;
+            text-decoration: none;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(74, 108, 247, 0.3);
+        }
+        .btn:hover {
+            background-color: #3a5cf6;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(74, 108, 247, 0.4);
+        }
+        .back-link {
+            margin-top: 20px;
+            color: #7f8c8d;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .back-link i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <i class="fas fa-language"></i>
+        </div>
+        <h1>Select Your Language</h1>
+        
+        <div class="language-options">
+            <div class="language-option active">
+                <div class="flag">🇺🇸</div>
+                <div class="language-name">English</div>
+                <div class="check"><i class="fas fa-check"></i></div>
+            </div>
+            
+            <div class="language-option">
+                <div class="flag">🇹🇼</div>
+                <div class="language-name">繁體中文 (Traditional Chinese)</div>
+                <div class="check"><i class="fas fa-check"></i></div>
+            </div>
+            
+            <div class="language-option">
+                <div class="flag">🇨🇳</div>
+                <div class="language-name">简体中文 (Simplified Chinese)</div>
+                <div class="check"><i class="fas fa-check"></i></div>
+            </div>
+        </div>
+        
+        <a href="register.html" class="btn">Continue</a>
+        
+        <a href="welcome.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+</body>
+</html> 
