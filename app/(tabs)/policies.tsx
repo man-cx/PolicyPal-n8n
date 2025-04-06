@@ -1,5 +1,16 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+  TextInput,
+  ActivityIndicator,
+  Modal,
+  Dimensions
+} from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -14,7 +25,9 @@ const mockPolicies = [
     status: 'Active', 
     type: 'Health',
     company: 'HealthGuard Plus',
-    expiryDate: '2024-12-31'
+    expiryDate: '2024-12-31',
+    premium: '$125/month',
+    coverageAmount: '$250,000'
   },
   { 
     id: '2', 
@@ -22,7 +35,9 @@ const mockPolicies = [
     status: 'Active', 
     type: 'Auto',
     company: 'AutoSafe Insurance',
-    expiryDate: '2024-09-15'
+    expiryDate: '2024-09-15',
+    premium: '$95/month',
+    coverageAmount: '$75,000'
   },
   { 
     id: '3', 
@@ -30,7 +45,9 @@ const mockPolicies = [
     status: 'Renewal Due', 
     type: 'Home',
     company: 'HomeProtect Ltd',
-    expiryDate: '2024-07-20'
+    expiryDate: '2024-07-20',
+    premium: '$150/month',
+    coverageAmount: '$450,000'
   },
   { 
     id: '4', 
@@ -38,7 +55,9 @@ const mockPolicies = [
     status: 'Expired', 
     type: 'Travel',
     company: 'TravelSafe Global',
-    expiryDate: '2023-11-30'
+    expiryDate: '2023-11-30',
+    premium: '$45/month',
+    coverageAmount: '$50,000'
   },
   { 
     id: '5', 
@@ -46,29 +65,73 @@ const mockPolicies = [
     status: 'Active', 
     type: 'Life',
     company: 'LifeGuard Assurance',
-    expiryDate: '2050-01-01'
+    expiryDate: '2050-01-01',
+    premium: '$75/month',
+    coverageAmount: '$500,000'
   },
+];
+
+// Policy type filter options
+const filterOptions = [
+  { id: 'all', label: 'All Types' },
+  { id: 'Health', label: 'Health' },
+  { id: 'Auto', label: 'Auto' },
+  { id: 'Home', label: 'Home' },
+  { id: 'Travel', label: 'Travel' },
+  { id: 'Life', label: 'Life' },
 ];
 
 export default function PoliciesScreen() {
   const { t } = useTranslation();
   const { theme, isDarkMode } = useTheme();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const [filteredPolicies, setFilteredPolicies] = useState(mockPolicies);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Filter policies based on search query and selected filter
+  useEffect(() => {
+    setIsLoading(true);
+    
+    const searchResults = mockPolicies.filter(policy => {
+      const matchesSearch = 
+        policy.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        policy.company.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesFilter = 
+        selectedFilter === 'all' || policy.type === selectedFilter;
+      
+      return matchesSearch && matchesFilter;
+    });
+    
+    // Simulate network delay
+    setTimeout(() => {
+      setFilteredPolicies(searchResults);
+      setIsLoading(false);
+    }, 300);
+  }, [searchQuery, selectedFilter]);
 
   const handlePolicyPress = (policyId: string) => {
-    // Use a valid route in the app to avoid type errors
-    router.navigate('/(tabs)/policies');
+    // Navigate to policy details
+    router.navigate(`/policy/${policyId}` as any);
+  };
+
+  const handleAddPolicy = () => {
+    // Navigate to add policy screen
+    router.navigate("/policy/add" as any);
   };
 
   const getStatusColor = (status: string) => {
     switch(status) {
       case 'Active':
-        return '#4CAF50'; // Green
+        return theme.colors.status.success;
       case 'Renewal Due':
-        return '#FF9800'; // Orange
+        return theme.colors.status.warning;
       case 'Expired':
-        return '#F44336'; // Red
+        return theme.colors.status.error;
       default:
-        return '#757575'; // Gray
+        return theme.colors.text.muted;
     }
   };
 
@@ -89,6 +152,86 @@ export default function PoliciesScreen() {
     }
   };
 
+  const renderFilterModal = () => (
+    <Modal
+      visible={isFilterModalVisible}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setIsFilterModalVisible(false)}
+    >
+      <TouchableOpacity
+        style={styles.modalOverlay}
+        activeOpacity={0.9}
+        onPress={() => setIsFilterModalVisible(false)}
+      >
+        <View
+          style={[
+            styles.filterModal,
+            { backgroundColor: isDarkMode ? theme.colors.neutral[800] : 'white' }
+          ]}
+        >
+          <Text
+            style={[
+              styles.filterTitle,
+              { color: isDarkMode ? theme.colors.text.light : theme.colors.text.dark }
+            ]}
+          >
+            {t('filter_by_type')}
+          </Text>
+          {filterOptions.map(option => (
+            <TouchableOpacity
+              key={option.id}
+              style={[
+                styles.filterOption,
+                selectedFilter === option.id && {
+                  backgroundColor: isDarkMode
+                    ? theme.colors.primary[900]
+                    : theme.colors.primary[50]
+                }
+              ]}
+              onPress={() => {
+                setSelectedFilter(option.id);
+                setIsFilterModalVisible(false);
+              }}
+            >
+              {option.id !== 'all' && (
+                <MaterialIcons
+                  name={getIconName(option.id)}
+                  size={20}
+                  color={theme.colors.primary[500]}
+                  style={styles.filterIcon}
+                />
+              )}
+              {option.id === 'all' && (
+                <MaterialIcons
+                  name="filter-list"
+                  size={20}
+                  color={theme.colors.primary[500]}
+                  style={styles.filterIcon}
+                />
+              )}
+              <Text
+                style={{
+                  color: isDarkMode ? theme.colors.text.light : theme.colors.text.dark
+                }}
+              >
+                {option.label}
+              </Text>
+              {selectedFilter === option.id && (
+                <MaterialIcons
+                  name="check"
+                  size={20}
+                  color={theme.colors.primary[500]}
+                  style={styles.checkIcon}
+                />
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  );
+
   const renderPolicyItem = ({ item }: { item: typeof mockPolicies[0] }) => (
     <TouchableOpacity 
       style={[
@@ -98,7 +241,10 @@ export default function PoliciesScreen() {
       onPress={() => handlePolicyPress(item.id)}
     >
       <View style={styles.policyHeader}>
-        <View style={styles.policyIconContainer}>
+        <View style={[
+          styles.policyIconContainer,
+          { backgroundColor: isDarkMode ? theme.colors.primary[900] : 'rgba(0, 123, 255, 0.1)' }
+        ]}>
           <MaterialIcons 
             name={getIconName(item.type)} 
             size={24} 
@@ -152,12 +298,50 @@ export default function PoliciesScreen() {
               { color: isDarkMode ? theme.colors.text.muted : theme.colors.text.muted }
             ]}
           >
-            {t('expiry_date')}
+            {t('coverage')}
           </Text>
           <Text 
             style={[
               styles.policyDetailValue, 
               { color: isDarkMode ? theme.colors.text.light : theme.colors.text.dark }
+            ]}
+          >
+            {item.coverageAmount}
+          </Text>
+        </View>
+        
+        <View style={styles.policyDetail}>
+          <Text 
+            style={[
+              styles.policyDetailLabel, 
+              { color: isDarkMode ? theme.colors.text.muted : theme.colors.text.muted }
+            ]}
+          >
+            {t('premium')}
+          </Text>
+          <Text 
+            style={[
+              styles.policyDetailValue, 
+              { color: isDarkMode ? theme.colors.text.light : theme.colors.text.dark }
+            ]}
+          >
+            {item.premium}
+          </Text>
+        </View>
+        
+        <View style={styles.expiryDateContainer}>
+          <Text 
+            style={[
+              styles.expiryDateLabel, 
+              { color: isDarkMode ? theme.colors.text.muted : theme.colors.text.muted }
+            ]}
+          >
+            {t('expires')}
+          </Text>
+          <Text 
+            style={[
+              styles.expiryDate, 
+              { color: isDarkMode ? theme.colors.status.warning : theme.colors.status.warning }
             ]}
           >
             {new Date(item.expiryDate).toLocaleDateString()}
@@ -182,7 +366,10 @@ export default function PoliciesScreen() {
         </View>
       </View>
       
-      <View style={styles.actionRow}>
+      <View style={[
+        styles.actionRow,
+        { borderTopColor: isDarkMode ? theme.colors.neutral[700] : '#e0e0e0' }
+      ]}>
         <TouchableOpacity 
           style={[
             styles.actionButton, 
@@ -203,7 +390,10 @@ export default function PoliciesScreen() {
         <TouchableOpacity 
           style={[
             styles.actionButton, 
-            { borderColor: isDarkMode ? theme.colors.neutral[600] : theme.colors.neutral[300] }
+            { 
+              borderColor: isDarkMode ? theme.colors.neutral[600] : theme.colors.neutral[300],
+              borderRightWidth: 0 
+            }
           ]}
         >
           <MaterialIcons name="share" size={16} color={theme.colors.primary[500]} />
@@ -218,6 +408,41 @@ export default function PoliciesScreen() {
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
+  );
+
+  const renderEmptyState = () => (
+    <View style={[
+      styles.emptyState,
+      { backgroundColor: isDarkMode ? theme.colors.neutral[800] : theme.colors.neutral[100] }
+    ]}>
+      <MaterialIcons
+        name="folder-open"
+        size={60}
+        color={isDarkMode ? theme.colors.neutral[600] : theme.colors.neutral[300]}
+      />
+      <Text style={[
+        styles.emptyStateTitle,
+        { color: isDarkMode ? theme.colors.text.light : theme.colors.text.dark }
+      ]}>
+        {t('no_policies_found')}
+      </Text>
+      <Text style={[
+        styles.emptyStateText,
+        { color: isDarkMode ? theme.colors.text.muted : theme.colors.text.muted }
+      ]}>
+        {t('try_adjusting_search')}
+      </Text>
+      <TouchableOpacity
+        style={[
+          styles.emptyStateButton,
+          { backgroundColor: theme.colors.primary[500] }
+        ]}
+        onPress={handleAddPolicy}
+      >
+        <MaterialIcons name="add" size={18} color="white" />
+        <Text style={styles.emptyStateButtonText}>{t('add_new_policy')}</Text>
+      </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -236,31 +461,110 @@ export default function PoliciesScreen() {
         >
           {t('my_policies')}
         </Text>
-        <TouchableOpacity style={styles.filterButton}>
-          <MaterialIcons 
-            name="filter-list" 
-            size={24} 
-            color={isDarkMode ? theme.colors.text.light : theme.colors.text.dark} 
-          />
+        <TouchableOpacity 
+          style={[
+            styles.addButton,
+            { backgroundColor: theme.colors.primary[500] }
+          ]}
+          onPress={handleAddPolicy}
+        >
+          <MaterialIcons name="add" size={20} color="white" />
+          <Text style={styles.addButtonText}>{t('add_new')}</Text>
         </TouchableOpacity>
       </View>
       
-      <FlatList
-        data={mockPolicies}
-        renderItem={renderPolicyItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
-      />
+      <View style={styles.searchFilterContainer}>
+        <View style={[
+          styles.searchBar,
+          { 
+            backgroundColor: isDarkMode ? theme.colors.neutral[800] : 'white',
+            borderColor: isDarkMode ? theme.colors.neutral[700] : '#e0e0e0'
+          }
+        ]}>
+          <MaterialIcons
+            name="search"
+            size={20}
+            color={isDarkMode ? theme.colors.text.muted : '#9e9e9e'}
+            style={styles.searchIcon}
+          />
+          <TextInput
+            style={[
+              styles.searchInput,
+              { color: isDarkMode ? theme.colors.text.light : theme.colors.text.dark }
+            ]}
+            placeholder={t('search_policies')}
+            placeholderTextColor={isDarkMode ? theme.colors.text.muted : '#9e9e9e'}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          {searchQuery !== '' && (
+            <TouchableOpacity onPress={() => setSearchQuery('')}>
+              <MaterialIcons
+                name="close"
+                size={20}
+                color={isDarkMode ? theme.colors.text.muted : '#9e9e9e'}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+        
+        <TouchableOpacity
+          style={[
+            styles.filterButton,
+            { 
+              backgroundColor: isDarkMode ? theme.colors.neutral[800] : 'white',
+              borderColor: isDarkMode ? theme.colors.neutral[700] : '#e0e0e0' 
+            }
+          ]}
+          onPress={() => setIsFilterModalVisible(true)}
+        >
+          <MaterialIcons
+            name="filter-list"
+            size={20}
+            color={isDarkMode ? theme.colors.text.muted : '#9e9e9e'}
+          />
+          <Text
+            style={[
+              styles.filterButtonText,
+              { color: isDarkMode ? theme.colors.text.light : theme.colors.text.dark }
+            ]}
+          >
+            {filterOptions.find(option => option.id === selectedFilter)?.label || t('all_types')}
+          </Text>
+          <MaterialIcons
+            name="arrow-drop-down"
+            size={20}
+            color={isDarkMode ? theme.colors.text.muted : '#9e9e9e'}
+          />
+        </TouchableOpacity>
+      </View>
+
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.colors.primary[500]} />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredPolicies}
+          renderItem={renderPolicyItem}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={renderEmptyState}
+        />
+      )}
       
       <TouchableOpacity 
         style={[
-          styles.addButton, 
+          styles.floatingAddButton, 
           { backgroundColor: theme.colors.primary[500] }
         ]}
+        onPress={handleAddPolicy}
       >
         <MaterialIcons name="add" size={24} color="white" />
       </TouchableOpacity>
+
+      {renderFilterModal()}
     </View>
   );
 }
@@ -279,8 +583,59 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
+  addButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  addButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    marginLeft: 4,
+  },
+  searchFilterContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    gap: 10,
+  },
+  searchBar: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    height: '100%',
+    fontSize: 14,
+  },
   filterButton: {
-    padding: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    minWidth: 120,
+    justifyContent: 'center',
+  },
+  filterButtonText: {
+    fontSize: 14,
+    marginHorizontal: 4,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   listContainer: {
     padding: 16,
@@ -302,7 +657,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 123, 255, 0.1)',
     marginRight: 12,
   },
   policyHeaderText: {
@@ -321,6 +675,8 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
   policyDetail: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 8,
   },
   policyDetailLabel: {
@@ -328,6 +684,21 @@ const styles = StyleSheet.create({
   },
   policyDetailValue: {
     fontSize: 14,
+    fontWeight: '500',
+  },
+  expiryDateContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#f1f1f1',
+  },
+  expiryDateLabel: {
+    fontSize: 12,
+  },
+  expiryDate: {
+    fontSize: 12,
     fontWeight: '500',
   },
   policyStatus: {
@@ -348,7 +719,6 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: 'row',
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
   },
   actionButton: {
     flex: 1,
@@ -362,7 +732,7 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     fontSize: 14,
   },
-  addButton: {
+  floatingAddButton: {
     position: 'absolute',
     bottom: 24,
     right: 24,
@@ -376,5 +746,69 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+  emptyState: {
+    alignItems: 'center',
+    padding: 40,
+    borderRadius: 12,
+  },
+  emptyStateTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptyStateText: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  emptyStateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+  },
+  emptyStateButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  filterModal: {
+    width: Dimensions.get('window').width * 0.8,
+    padding: 20,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  filterTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  filterOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  filterIcon: {
+    marginRight: 12,
+  },
+  checkIcon: {
+    marginLeft: 'auto',
   },
 });

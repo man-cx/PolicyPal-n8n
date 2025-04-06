@@ -43,12 +43,12 @@
 - [x] Add quick access shortcuts
 
 ## 7. Policy Management
-- [ ] Create policy list screen
+- [x] Create policy list screen
 - [x] Build policy details screen
-- [ ] Implement add new policy screen
+- [x] Implement add new policy screen
 - [ ] Create edit policy functionality
-- [ ] Build document upload screen
-- [ ] Implement policy search functionality
+- [x] Build document upload screen
+- [x] Implement policy search functionality
 
 ## 8. AI Policy Advisor
 - [ ] Create AI chat interface
