@@ -44,7 +44,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
       <View style={styles.userSection}>
         <View style={styles.profileImageContainer}>
           <Image
-            source={require('@assets/avatar-placeholder.png')}
+            source={require('@assets/images/icon.png')}
             style={styles.profileImage}
           />
         </View>
